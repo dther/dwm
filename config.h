@@ -1,5 +1,4 @@
-/* See LICENSE file for copyright and license details. */
-
+/* See LICENSE file for copyright and license details. */ 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -7,15 +6,26 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
+static const char col_base00[]       = "#090300";
 static const char col_base01[]       = "#3a3432";
 static const char col_base02[]       = "#4a4543";
+static const char col_base03[]       = "#5c5855";
 static const char col_base04[]       = "#807d7c";
 static const char col_base05[]       = "#a5a2a2";
+static const char col_base06[]       = "#4a4543";
+static const char col_base07[]       = "#f7f7f7";
+static const char col_base08[]       = "#db2d20";
+static const char col_base09[]       = "#e8bbd0";
+static const char col_base0A[]       = "#fded02";
+static const char col_base0B[]       = "#01a252";
+static const char col_base0C[]       = "#b5e4f4";
 static const char col_base0D[]       = "#01a0e4";
+static const char col_base0E[]       = "#a16a94";
+static const char col_base0F[]       = "#cdab53";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_base05, col_base01, col_base01 },
-	[SchemeSel]  = { col_base05, col_base0D,  col_base0D  },
+	[SchemeNorm] = { col_base05, col_base00, col_base00 },
+	[SchemeSel]  = { col_base07, col_base0D,  col_base0D  },
 };
 
 /* tagging */
@@ -56,7 +66,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_base01, "-nf", col_base04, "-sb", col_base02, "-sf", col_base05, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_base01, "-nf", col_base05, "-sb", col_base02, "-sf", col_base07, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 static Key keys[] = {
