@@ -1,3 +1,5 @@
+Note: Can't git clone dwm from suckless.org for some reason, keeps failing at 50%. Repository acquired via download.
+
 dwm - dynamic window manager
 ============================
 dwm is an extremely fast, small, and dynamic window manager for X.
