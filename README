@@ -1,3 +1,13 @@
+Personal fork of dwm. Still heavily wip.
+'patches' contains patches that were used at one point, but currently,
+patches applied are:
+
+-scratchpad
+-autostart
+
+config.h is my current preferred settings, but will likely change later on.
+-------
+
 dwm - dynamic window manager
 ============================
 dwm is an extremely fast, small, and dynamic window manager for X.

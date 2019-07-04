@@ -52,8 +52,8 @@
 #define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
-#define WIDTH(X)                ((X)->w + 2 * (X)->bw + gappx)
-#define HEIGHT(X)               ((X)->h + 2 * (X)->bw + gappx)
+#define WIDTH(X)                ((X)->w + 2 * (X)->bw)
+#define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 
@@ -174,7 +174,6 @@ static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
-static char* help();
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
@@ -275,6 +274,7 @@ static Window root, wmcheckwin;
 #include "config.h"
 
 static unsigned int scratchtag = 1 << LENGTH(tags);
+
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
@@ -967,12 +967,6 @@ grabkeys(void)
 	}
 }
 
-char*
-help(void)
-{
-	return "usage: dwm [-hv] [-fn font] [-nb color] [-nf color] [-sb color] [-sf color]\n[-df font] [-dnf color] [-dnb color] [-dsf color] [-dsb color]\n";
-}
-
 void
 incnmaster(const Arg *arg)
 {
@@ -1293,36 +1287,6 @@ void
 resizeclient(Client *c, int x, int y, int w, int h)
 {
 	XWindowChanges wc;
-	unsigned int n;
-	unsigned int gapoffset;
-	unsigned int gapincr;
-	Client *nbc;
-
-	wc.border_width = c->bw;
-
-	/* Get number of clients for the selected monitor */
-	for (n = 0, nbc = nexttiled(selmon->clients); nbc; nbc = nexttiled(nbc->next), n++);
-
-	/* Do nothing if layout is floating */
-	if (c->isfloating || selmon->lt[selmon->sellt]->arrange == NULL) {
-		gapincr = gapoffset = 0;
-	} else {
-		/* Remove border and gap if layout is monocle or only one client */
-		if (selmon->lt[selmon->sellt]->arrange == monocle || n == 1) {
-			gapoffset = 0;
-			gapincr = -2 * borderpx;
-			wc.border_width = 0;
-		} else {
-			gapoffset = gappx;
-			gapincr = 2 * gappx;
-		}
-	}
-
-	c->oldx = c->x; c->x = wc.x = x + gapoffset;
-	c->oldy = c->y; c->y = wc.y = y + gapoffset;
-	c->oldw = c->w; c->w = wc.width = w - gapincr;
-	c->oldh = c->h; c->h = wc.height = h - gapincr;
-
 
 	c->oldx = c->x; c->x = wc.x = x;
 	c->oldy = c->y; c->y = wc.y = y;
@@ -2202,32 +2166,10 @@ zoom(const Arg *arg)
 int
 main(int argc, char *argv[])
 {
-	for(int i=1;i<argc;i+=1)
-		if (!strcmp("-v", argv[i]))
-			die("dwm-"VERSION);
-		else if (!strcmp("-h", argv[i]) || !strcmp("--help", argv[i]))
-			die(help());
-		else if (!strcmp("-fn", argv[i])) /* font set */
-			fonts[0] = argv[++i];
-		else if (!strcmp("-nb",argv[i])) /* normal background color */
-			colors[SchemeNorm][1] = argv[++i];
-		else if (!strcmp("-nf",argv[i])) /* normal foreground color */
-			colors[SchemeNorm][0] = argv[++i];
-		else if (!strcmp("-sb",argv[i])) /* selected background color */
-			colors[SchemeSel][1] = argv[++i];
-		else if (!strcmp("-sf",argv[i])) /* selected foreground color */
-			colors[SchemeSel][0] = argv[++i];
-		else if (!strcmp("-df", argv[i])) /* dmenu font */
-			dmenucmd[4] = argv[++i];
-		else if (!strcmp("-dnb",argv[i])) /* dmenu normal background color */
-			dmenucmd[6] = argv[++i];
-		else if (!strcmp("-dnf",argv[i])) /* dmenu normal foreground color */
-			dmenucmd[8] = argv[++i];
-		else if (!strcmp("-dsb",argv[i])) /* dmenu selected background color */
-			dmenucmd[10] = argv[++i];
-		else if (!strcmp("-dsf",argv[i])) /* dmenu selected foreground color */
-			dmenucmd[12] = argv[++i];
-		else die(help());
+	if (argc == 2 && !strcmp("-v", argv[1]))
+		die("dwm-"VERSION);
+	else if (argc != 1)
+		die("usage: dwm [-v]");
 	if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
 		fputs("warning: no locale support\n", stderr);
 	if (!(dpy = XOpenDisplay(NULL)))
