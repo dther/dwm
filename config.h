@@ -30,7 +30,7 @@ static char *colors[][3] = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "", "", "", "", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -38,8 +38,11 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class     	       instance   	title      	    tags mask     isfloating   monitor */
-	{ "Krita",		NULL,      	NULL,      		0,            0,           -1 },
-	{ "tabbed",		"tabbed-surf",	NULL,   	        1 << 8,       0,           -1 },
+	{ "Krita",		    NULL,      	NULL,      	       	1 << 1,            0,           -1 },
+	{ "MyPaint",		    NULL,      	NULL,           1 << 1,            0,           -1 },
+	{ "tabbed",		"tabbed-surf",	NULL,   	        1 << 3,            0,           -1 },
+	{ "Discord",		    NULL,      	NULL,   	    1 << 0,            0,           -1 },
+	{ "zathura",		    NULL,      	NULL,   	    1 << 2,            0,           -1 },
 };
 
 /* layout(s) */
@@ -99,6 +102,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
+	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
+	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
