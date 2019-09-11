@@ -30,7 +30,7 @@ static char *colors[][3] = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "", "", "", "", "", "", "7", "8", "9" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -38,11 +38,17 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class     	       instance   	title      	    tags mask     isfloating   monitor */
-	{ "Krita",		    NULL,      	NULL,      	       	1 << 1,            0,           -1 },
-	{ "MyPaint",		    NULL,      	NULL,           1 << 1,            0,           -1 },
-	{ "tabbed",		"tabbed-surf",	NULL,   	        1 << 3,            0,           -1 },
-	{ "Discord",		    NULL,      	NULL,   	    1 << 0,            0,           -1 },
-	{ "zathura",		    NULL,      	NULL,   	    1 << 2,            0,           -1 },
+	{ "krita",		        NULL,      	NULL,         	1 << 3,            0,           -1 },
+	{ "MyPaint",		    NULL,      	NULL,           1 << 3,            0,           -1 },
+	{ "tabbed",	   "tabbed-surf",	    NULL,  	        1 << 0,            0,           -1 },
+	{ "firefox",		    NULL,	    NULL,  	        1 << 0,            0,           -1 },
+	{ "discord",		    NULL,      	NULL,   	    1 << 1,            0,           -1 },
+	{ "Zathura",		    NULL,      	NULL,   	    1 << 2,            0,           -1 },
+	{ NULL,        "libreoffice",   	NULL,   	    1 << 2,            0,           -1 },
+	{ "St",                 "st",   	"st",   	    1 << 4,            0,           -1 },
+	{ "St",                 "st",   "ranger",   	    1 << 5,            0,           -1 },
+	{ "St",                 "st",      "vim",   	    1 << 4,            0,           -1 },
+	{ "St",                 "st",     "tmux",   	    1 << 4,            0,           -1 },
 };
 
 /* layout(s) */
@@ -52,8 +58,8 @@ static const int resizehints = 0;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
+	{ "",      tile },    /* first entry is default */
+	{ "",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
 };
 
