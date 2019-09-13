@@ -45,10 +45,10 @@ static const Rule rules[] = {
 	{ "discord",		    NULL,      	NULL,   	    1 << 2,            0,           -1 },
 	{ "Zathura",		    NULL,      	NULL,   	    1 << 3,            0,           -1 },
 	{ NULL,        "libreoffice",   	NULL,   	    1 << 3,            0,           -1 },
-	{ "St",                 "st",   	"st",   	    1 << 0,            0,           -1 },
-	{ "St",                 "st",   "ranger",   	    1 << 5,            0,           -1 },
-	{ "St",                 "st",      "vim",   	    1 << 0,            0,           -1 },
-	{ "St",                 "st",     "tmux",   	    1 << 0,            0,           -1 },
+	{ "st-256color",  "st-256color",   	"st",   	    1 << 0,            0,           -1 },
+	{ "st-256color",  "st-256color", "ranger",   	    1 << 5,            0,           -1 },
+	{ "st-256color",  "st-256color",   "vim",   	    1 << 0,            0,           -1 },
+	{ "st-256color",  "st-256color",  "tmux",   	    1 << 0,            0,           -1 },
 };
 
 /* layout(s) */
