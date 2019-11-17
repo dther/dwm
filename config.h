@@ -52,7 +52,8 @@ static const Rule rules[] = {
     { "Inkscape",           NULL,       NULL,           1 << 4,            0,           -1 },
     { "OpenSCAD",           NULL,       NULL,           1 << 4,            0,           -1 },
     { "cura",               NULL,       NULL,           1 << 5,            0,           -1 },
-    { "Steam",              NULL,       NULL,           1 << 7,            1,           -1 },
+    { "Steam",              NULL,       NULL,           1 << 6,            1,           -1 },
+    { "Steam",              "Steam",   "Steam",         1 << 6,            0,           -1 },
 };
 
 /* layout(s) */
