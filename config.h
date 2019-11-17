@@ -48,7 +48,7 @@ static const Rule rules[] = {
 	{ NULL,        "libreoffice",   	NULL,   	    1 << 3,            0,           -1 },
 	{ "st-256color",  "st-256color",   	"st",   	    1 << 0,            0,           -1 },
 	{ "st-256color",  "st-256color", "ranger",   	    1 << 5,            0,           -1 },
-	{ "st-256color",  "st-256color",   "vim",   	    1 << 0,            0,           -1 },
+	{ "st-256color",  "st-256color",   "Vim",   	    1 << 0,            0,           -1 },
 	{ "st-256color",  "st-256color",  "tmux",   	    1 << 0,            0,           -1 },
     { "Inkscape",           NULL,       NULL,           1 << 4,            0,           -1 },
     { "OpenSCAD",           NULL,       NULL,           1 << 4,            0,           -1 },
