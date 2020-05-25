@@ -1,14 +1,13 @@
-/* See LICENSE file for copyright and license details. */
-
+/* See LICENSE file for copyright and license details. */ 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const unsigned int gappx     = 5;        /* gap pixel between windows */
+static const unsigned int gappx     = 5;	/* gaps for A E S T H E T I C */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char statussep         = ';';      /* separator between status bars */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char statussep         = ';';      /* status bar separator */
+static const char *fonts[]          = { "Siji:size=10", "xos4 Terminus:size=10" };
+static const char dmenufont[]       = "xos4 Terminus:size=10";
 static char color0[]                = "#222222";
 static char color1[]                = "#222222";
 static char color2[]                = "#222222";
@@ -16,69 +15,101 @@ static char color3[]                = "#222222";
 static char color4[]                = "#222222";
 static char color5[]                = "#222222";
 static char color6[]                = "#222222";
-static char color7[]                = "#444444";
-static char color8[]                = "#bbbbbb";
+static char color7[]                = "#bbbbbb";
+static char color8[]                = "#444444";
 static char color9[]                = "#222222";
 static char color10[]               = "#005577";
-static char color11[]               = "#005577";
-static char color12[]               = "#005577";
-static char color13[]               = "#005577";
-static char color14[]               = "#005577";
+static char color11[]               = "#222222";
+static char color12[]               = "#222222";
+static char color13[]               = "#222222";
+static char color14[]               = "#222222";
 static char color15[]               = "#eeeeee";
+/* Some colours that don't change. Used for errors/warnings and the like. */
+static char colorred[]              = "#ff0000";
+static char coloryellow[]           = "#ffff00";
+static char colorgreen[]            = "#00ff00";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { color7, color0, color8 },
-       [SchemeSel]  = { color15,  color10,  color7  },
+       [SchemeSel]  = { color15,  color9,  color10 },
+       [SchemeOk]   = { colorgreen, color0, color10 },
+       [SchemeWarn] = { coloryellow, color0, color10 },
+       [SchemeUrgent] = { colorred, color0, color10 },
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
+static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class     	       instance   	title      	    tags mask     isfloating   monitor */
+	{ "krita",		        NULL,      	NULL,         	1 << 4,            0,           -1 },
+	{ "MyPaint",		    NULL,      	NULL,           1 << 4,            0,           -1 },
+	{ "tabbed",	   "tabbed-surf",	    NULL,  	        1 << 1,            0,           -1 },
+	{ "firefox",		    NULL,	    NULL,  	        1 << 1,            0,           -1 },
+	{ "discord",		    NULL,      	NULL,   	    1 << 2,            0,           -1 },
+	{ "Zathura",		    NULL,      	NULL,   	    1 << 3,            0,           -1 },
+	{ NULL,        "libreoffice",   	NULL,   	    1 << 3,            0,           -1 },
+    { "cool-retro-term",    NULL,       NULL,           1 << 0,            0,           -1 },
+	{ "st-256color",  "st-256color",   	"st",   	    1 << 0,            0,           -1 },
+	{ "st-256color",  "st-256color", "ranger",   	    1 << 5,            0,           -1 },
+	{ "st-256color",  "st-256color",   "Vim",   	    1 << 0,            0,           -1 },
+	{ "st-256color",  "st-256color",  "tmux",   	    1 << 0,            0,           -1 },
+    { "Inkscape",           NULL,       NULL,           1 << 4,            0,           -1 },
+    { "OpenSCAD",           NULL,       NULL,           1 << 4,            0,           -1 },
+    { "cura",               NULL,       NULL,           1 << 4,            0,           -1 },
+    { "Steam",              NULL,       NULL,           1 << 6,            1,           -1 },
+    { "Steam",              "Steam",   "Steam",         1 << 6,            0,           -1 },
+    { "pico8",              "pico8",    NULL,         1 << 6,            0,           -1 },
+    { "Lutris",             NULL,       NULL,           1 << 6,            0,           -1 },
+	{ "Emacs",              NULL,       NULL,           1 << 0,            0,           -1 },
 };
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
+	{ "",      tile },    /* first entry is default */
+	{ "",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ MODKEY|ControlMask,           KEY,      view,           {.ui = 1 << TAG} }, \
+	{ MODKEY,                       KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
+#define HOLDKEY XK_Super_L // key held to create alt tags
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color7, "-sf", color15, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char scratchpadname[] = "scratchpad";
-static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", "-e", "tmux-scratchpad", NULL };
+static const char *networkmancmd[] = { "networkmanager_dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
+static const char *bindcmd[] = { "dmenu-reprogram", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+    { 0,                            HOLDKEY,   showalttag,       {0} },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+    { MODKEY,                       XK_n,      spawn,          {.v = networkmancmd} },
+    { MODKEY,                       XK_q,      spawn,          {.v = bindcmd} },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY,			XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -127,8 +158,9 @@ static Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
-	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
+	{ ClkTagBar,            0,              Button3,        view,           {0} },
+	{ ClkTagBar,            0,              Button1,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
+
