@@ -64,9 +64,10 @@ static const Rule rules[] = {
     { "cura",               NULL,       NULL,           1 << 4,            0,           -1 },
     { "Steam",              NULL,       NULL,           1 << 6,            1,           -1 },
     { "Steam",              "Steam",   "Steam",         1 << 6,            0,           -1 },
-    { "pico8",              "pico8",    NULL,         1 << 6,            0,           -1 },
+    { "pico8",              "pico8",    NULL,           1 << 6,            0,           -1 },
     { "Lutris",             NULL,       NULL,           1 << 6,            0,           -1 },
 	{ "Emacs",              NULL,       NULL,           1 << 0,            0,           -1 },
+    { "Cellwriter",         NULL,       NULL,           1 << 8,            1,           -1 },
 };
 
 /* layout(s) */
