@@ -25,16 +25,16 @@ static char color13[]               = "#222222";
 static char color14[]               = "#222222";
 static char color15[]               = "#eeeeee";
 /* Some colours that don't change. Used for errors/warnings and the like. */
-static char colorred[]              = "#ff0000";
-static char coloryellow[]           = "#ffff00";
-static char colorgreen[]            = "#00ff00";
+//static char colorred[]              = "#ff0000";
+//static char coloryellow[]           = "#ffff00";
+//static char colorgreen[]            = "#00ff00";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { color7, color0, color8 },
        [SchemeSel]  = { color15,  color9,  color10 },
-       [SchemeOk]   = { colorgreen, color0, color10 },
-       [SchemeWarn] = { coloryellow, color0, color10 },
-       [SchemeUrgent] = { colorred, color0, color10 },
+       //[SchemeOk]   = { colorgreen, color0, color10 },
+       //[SchemeWarn] = { coloryellow, color0, color10 },
+       //[SchemeUrgent] = { colorred, color0, color10 },
 };
 
 /* tagging */
