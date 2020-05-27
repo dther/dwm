@@ -110,7 +110,7 @@ static Key keys[] = {
     { MODKEY,                       XK_n,      spawn,          {.v = networkmancmd} },
     { MODKEY,                       XK_q,      spawn,          {.v = bindcmd} },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,			XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY,			            XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
