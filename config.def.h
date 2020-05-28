@@ -102,6 +102,10 @@ static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", "-e", "tmux-scratchpad", NULL };
 static const char *networkmancmd[] = { "networkmanager_dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
 static const char *bindcmd[] = { "dmenu-reprogram", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
+static const char *mpctogglecmd[] = { "mpc", "toggle", NULL };
+static const char *mpcstopcmd[] = { "mpc", "stop", NULL };
+static const char *mpcnextcmd[] = { "mpc", "next", NULL };
+static const char *mpcprevcmd[] = { "mpc", "prev", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -136,6 +140,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0 } },
+    { MODKEY,                       XK_Up,     spawn,          {.v = mpcstopcmd} },
+    { MODKEY,                       XK_Down,   spawn,          {.v = mpctogglecmd} },
+    { MODKEY,                       XK_Left,   spawn,          {.v = mpcprevcmd} },
+    { MODKEY,                       XK_Right,  spawn,          {.v = mpcnextcmd} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
