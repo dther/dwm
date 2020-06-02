@@ -59,6 +59,7 @@ static const Rule rules[] = {
 	{ "St",                 "st",       "ranger",   	1 << 5,            0,           -1 },
 	{ "St",                 "st",       "Vim",   	    1 << 0,            0,           -1 },
 	{ "St",                 "st",       "tmux",   	    1 << 0,            0,           -1 },
+	{ "St",                 "st", "Thinkvantage Bind",  0,              1,           -1 },
     { "Inkscape",           NULL,       NULL,           1 << 4,            0,           -1 },
     { "OpenSCAD",           NULL,       NULL,           1 << 4,            0,           -1 },
     { "cura",               NULL,       NULL,           1 << 4,            0,           -1 },
@@ -102,7 +103,8 @@ static const char *termcmd[]  = { "st", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", "-e", "tmux-scratchpad", NULL };
 static const char *networkmancmd[] = { "networkmanager_dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
-static const char *bindcmd[] = { "dmenu-reprogram", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
+#define THINKV_PATH "/home/dther/bin/thinkvantage" //path to script bound to thinkvantage
+static const char *bindcmd[] = { "st", "-t", "Thinkvantage Bind", "-g", "120x34", "-e", "vim", THINKV_PATH, NULL};
 static const char *mpctogglecmd[] = { "mpc", "toggle", NULL };
 static const char *mpcstopcmd[] = { "mpc", "stop", NULL };
 static const char *mpcnextcmd[] = { "mpc", "next", NULL };
