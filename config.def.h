@@ -50,7 +50,7 @@ static const Rule rules[] = {
 	{ "krita",		        NULL,      	NULL,         	1 << 4,            0,           -1 },
 	{ "MyPaint",		    NULL,      	NULL,           1 << 4,            0,           -1 },
 	{ "tabbed",	   "tabbed-surf",	    NULL,  	        1 << 1,            0,           -1 },
-	{ "firefox",		    NULL,	    NULL,  	        1 << 1,            0,           -1 },
+	{ "Pale moon",		    NULL,	    NULL,  	        1 << 1,            0,           -1 },
 	{ "discord",		    NULL,      	NULL,   	    1 << 2,            0,           -1 },
 	{ "Zathura",		    NULL,      	NULL,   	    1 << 3,            0,           -1 },
 	{ NULL,        "libreoffice",   	NULL,   	    1 << 3,            0,           -1 },
