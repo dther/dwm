@@ -1863,11 +1863,8 @@ sigchld(int unused)
 void
 sighup(int unused)
 {
-	/*
 	Arg a = {.i = 1};
 	quit(&a);
-	*/
-	loadxrdb();
 }
 
 void
