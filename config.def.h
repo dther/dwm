@@ -7,8 +7,8 @@ static const int swallowfloating    = 0;        /* 1 means swallow floating wind
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char statussep         = ';';      /* status bar separator */
-static const char *fonts[]          = { "Siji:size=10", "Terminus:size=10" };
-static const char dmenufont[]       = "Terminus:size=10";
+static const char *fonts[]          = { "Siji:size=10", "xos4 Terminus:size=10" };
+static const char dmenufont[]       = "xos4 Terminus:size=10";
 static char color0[]                = "#222222";
 static char color1[]                = "#222222";
 static char color2[]                = "#222222";
