@@ -54,6 +54,7 @@ static const Rule rules[] = {
 	{ "Pale moon",		    NULL,	    NULL,  	        1 << 1,       0,           0,           -1,         -1 },
 	{ "discord",		    NULL,      	NULL,   	    1 << 2,       0,           0,           0,          -1 },
 	{ "Zathura",		    NULL,      	NULL,   	    1 << 3,       0,           0,           0,          -1 },
+	{ "calibre",		    NULL,      	NULL,   	    1 << 3,       0,           0,           0,          -1 },
 	{ NULL,        "libreoffice",   	NULL,   	    1 << 3,       0,           0,           0,          -1 },
     { "cool-retro-term",    NULL,       NULL,           1 << 0,       0,           1,           -1,         -1 },
 	{ "St",                 "st",   	"st",   	    1 << 0,       0,           1,           -1,         -1 },
