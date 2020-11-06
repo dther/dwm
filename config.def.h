@@ -52,6 +52,7 @@ static const Rule rules[] = {
 	{ "MyPaint",		    NULL,      	NULL,           1 << 4,       0,           0,           0,          -1 },
 	{ "tabbed",	   "tabbed-surf",	    NULL,  	        1 << 1,       0,           0,           0,          -1 },
 	{ "Pale moon",		    NULL,	    NULL,  	        1 << 1,       0,           0,           -1,         -1 },
+	{ "Brave-browser",		    NULL,	    NULL,  	        1 << 1,       0,           0,           -1,         -1 },
 	{ "discord",		    NULL,      	NULL,   	    1 << 2,       0,           0,           0,          -1 },
 	{ "Zathura",		    NULL,      	NULL,   	    1 << 3,       0,           0,           0,          -1 },
 	{ "calibre",		    NULL,      	NULL,   	    1 << 3,       0,           0,           0,          -1 },
