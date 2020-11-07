@@ -108,8 +108,8 @@ static const char *termcmd[]  = { "st", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", "-e", "tmux-scratchpad", NULL };
 static const char *networkmancmd[] = { "networkmanager_dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
-#define THINKV_PATH "/home/dther/bin/thinkvantage" //path to script bound to thinkvantage
-static const char *bindcmd[] = { "st", "-t", "Thinkvantage Bind", "-g", "120x34", "-e", "vim", THINKV_PATH, NULL};
+#define THINKV_PATH "/home/dther/bin/thinkvantage/thinkvantage-bound" //path to script bound to thinkvantage
+static const char *bindcmd[] = { "thinkvantage-bind" };
 static const char *mpctogglecmd[] = { "mpc", "toggle", NULL };
 static const char *mpcstopcmd[] = { "mpc", "stop", NULL };
 static const char *mpcnextcmd[] = { "mpc", "next", NULL };

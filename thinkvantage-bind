@@ -1,0 +1,5 @@
+#!/bin/sh
+
+current="$HOME/bin/thinkvantage/$(ls ~/bin/thinkvantage/ | dmenu)" || exit
+
+ln -sf "$current" "$HOME/bin/thinkvantage/thinkvantage-bound" 
