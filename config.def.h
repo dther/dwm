@@ -75,6 +75,7 @@ static const Rule rules[] = {
     { "Cellwriter",         NULL,       NULL,           1 << 8,       1,           0,           0,          -1 },
     { "Wpg",                NULL,       NULL,           1 << 8,       1,           0,           0,          -1 },
     { NULL,                 NULL,       "Event Tester",      0,       1,           0,           1,          -1 },
+    { NULL,                 "passcard",       NULL,             0b111111111, 1,         0,           0,          -1 },
 };
 
 /* layout(s) */
@@ -107,7 +108,8 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "st", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", "-e", "tmux-scratchpad", NULL };
-static const char *networkmancmd[] = { "networkmanager_dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
+//static const char *networkmancmd[] = { "networkmanager_dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
+static const char *connmancmd[] = { "connman-gtk", NULL};
 #define THINKV_PATH "/home/dther/bin/thinkvantage/thinkvantage-bound" //path to script bound to thinkvantage
 static const char *bindcmd[] = { "thinkvantage-bind" };
 static const char *mpctogglecmd[] = { "mpc", "toggle", NULL };
@@ -119,7 +121,7 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
     { 0,                            HOLDKEY,   showalttag,       {0} },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-    { MODKEY,                       XK_n,      spawn,          {.v = networkmancmd} },
+    { MODKEY,                       XK_n,      spawn,          {.v = connmancmd} },
     { MODKEY,                       XK_q,      spawn,          {.v = bindcmd} },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,			            XK_grave,  togglescratch,  {.v = scratchpadcmd } },
