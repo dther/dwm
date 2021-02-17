@@ -5,6 +5,7 @@ static const unsigned int gappx     = 5;	/* gaps for A E S T H E T I C */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
+static const int showextrabar       = 1;   /* 0 means no extra bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char statussep         = ';';      /* status bar separator */
 static const char *fonts[]          = { "Siji:size=10", "xos4 Terminus:size=10" };
@@ -126,6 +127,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,			            XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask,             XK_b,      toggleextrabar, {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
