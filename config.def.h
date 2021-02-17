@@ -76,7 +76,7 @@ static const Rule rules[] = {
     { "Cellwriter",         NULL,       NULL,           1 << 8,       1,           0,           0,          -1 },
     { "Wpg",                NULL,       NULL,           1 << 8,       1,           0,           0,          -1 },
     { NULL,                 NULL,       "Event Tester",      0,       1,           0,           1,          -1 },
-    { NULL,                 "passcard",       NULL,             0b111111111, 1,         0,           0,          -1 },
+    { NULL,                 "passcard",       NULL,             1, 1,         0,           0,          -1 },
 };
 
 /* layout(s) */
