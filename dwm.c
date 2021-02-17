@@ -49,7 +49,7 @@
 #define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
 	                           * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
-#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
+#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]) && (C->mon->selws == C->ws))
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
@@ -85,24 +85,6 @@ typedef struct {
 typedef struct Monitor Monitor;
 typedef struct Client Client;
 typedef struct Workspace Workspace;
-
-struct Workspace {
-	//TODO: implement
-	/* A workspace contains:
-	 *  - A stack of windows (`Client`s)
-	 *  - Selected taglist (`seltags`)
-	 *  - Selected layout (`sellt` and `lt[2]`?)
-	 *  - The monitor it is active on (`mon`)
-	 */
-	unsigned int seltags;
-	unsigned int sellt;
-	unsigned int tagset[2];
-	Client *clients;
-	Client *sel;
-	Client *stack;
-	Monitor *mon;
-	const Layout *lt[2];
-};
 
 struct Client {
 	char name[256];
@@ -149,10 +131,18 @@ struct Monitor {
 	Client *sel;
 	Client *stack;
 	Monitor *next;
-	Workspace *selws;
 	Window barwin;
 	const Layout *lt[2];
-	const Workspace *ws[3];
+	Workspace *selws;
+};
+
+struct Workspace {
+	float mfact;
+	int nmaster;
+	unsigned int seltags;
+	unsigned int sellt;
+	unsigned int tagset[2];
+	const Layout *lt[2];
 };
 
 typedef struct {
