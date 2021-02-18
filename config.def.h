@@ -43,6 +43,8 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
+static Workspace workspaces[2];
+
 /* key definitions */
 #define MODKEY Mod1Mask
 #define TAGKEYS(KEY,TAG) \
@@ -84,6 +86,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+    /* FOR TESTING PURPOSES */
+    { MODKEY,XK_z,switchworkspace,{.i=0} },
+    { MODKEY,XK_x,switchworkspace,{.i=1} },
+    /* FOR TESTING */
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

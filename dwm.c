@@ -49,7 +49,8 @@
 #define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
 	                           * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
-#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]) && (C->mon->selws == C->ws))
+#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
+#define INWORKSPACE(C)          ((C->ws == C->mon->selws))
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
@@ -189,6 +190,7 @@ static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
 static void incnmaster(const Arg *arg);
+static void initworkspace(Workspace *ws);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
@@ -217,6 +219,7 @@ static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
+static void selworkspace(Workspace *ws);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
@@ -227,6 +230,7 @@ static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
+static void switchworkspace(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
 static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
@@ -240,6 +244,7 @@ static void updatestatus(void);
 static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
+static void updateworkspace(Workspace *ws);
 static void view(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
@@ -314,8 +319,11 @@ applyrules(Client *c)
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
-			if (m)
+			if (m) {
 				c->mon = m;
+                /* if c has a specific monitor, make sure it always launches on the active workspace */
+                c->ws = m->selws;
+            }
 		}
 	}
 	if (ch.res_class)
@@ -655,6 +663,8 @@ createmon(void)
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
+    m->selws = &workspaces[0];
+    if (!m->selws) initworkspace(m->selws);
 	return m;
 }
 
@@ -804,6 +814,8 @@ focus(Client *c)
 	if (c) {
 		if (c->mon != selmon)
 			selmon = c->mon;
+        if (c->ws != selmon->selws)
+            selmon->selws = c->ws;
 		if (c->isurgent)
 			seturgent(c, 0);
 		detachstack(c);
@@ -981,7 +993,23 @@ void
 incnmaster(const Arg *arg)
 {
 	selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
+    updateworkspace(selmon->selws);
 	arrange(selmon);
+}
+
+void
+initworkspace(Workspace* ws)
+{
+    /* Initialise default workspace. */
+    ws = ecalloc(1, sizeof(Workspace));
+
+	ws->tagset[0] = ws->tagset[1] = 1;
+	ws->mfact = mfact;
+	ws->nmaster = nmaster;
+    ws->sellt = 0;
+    ws->seltags = 0;
+	ws->lt[0] = &layouts[0];
+	ws->lt[1] = &layouts[1 % LENGTH(layouts)];
 }
 
 #ifdef XINERAMA
@@ -1048,8 +1076,11 @@ manage(Window w, XWindowAttributes *wa)
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
+        c->ws = t->mon->selws;
 	} else {
 		c->mon = selmon;
+        /* attach to current workspace. Might tweak this to be in applyrules(). */
+        c->ws = selmon->selws;
 		applyrules(c);
 	}
 
@@ -1431,6 +1462,7 @@ sendmon(Client *c, Monitor *m)
 	detachstack(c);
 	c->mon = m;
 	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
+    c->ws = m->selws; /* set client to target monitor's current workspace */
 	attach(c);
 	attachstack(c);
 	focus(NULL);
@@ -1523,6 +1555,7 @@ setlayout(const Arg *arg)
 		arrange(selmon);
 	else
 		drawbar(selmon);
+    updateworkspace(selmon->selws);
 }
 
 /* arg > 1.0 will set mfact absolutely */
@@ -1537,6 +1570,7 @@ setmfact(const Arg *arg)
 	if (f < 0.05 || f > 0.95)
 		return;
 	selmon->mfact = f;
+    updateworkspace(selmon->selws);
 	arrange(selmon);
 }
 
@@ -1625,11 +1659,28 @@ seturgent(Client *c, int urg)
 }
 
 void
+selworkspace(Workspace *ws)
+{
+    /* Make sure workspace is initialised */
+    if (!ws) initworkspace(ws);
+
+    //Set selmon->selws to workspace, and change all of selmon's attributes to workspace's
+    selmon->selws = ws;
+    
+    selmon->mfact = ws->mfact;
+    selmon->nmaster = ws->nmaster;
+    selmon->seltags = ws->seltags;
+    selmon->sellt = ws->sellt;
+    selmon->lt[0] = ws->lt[0];
+    selmon->lt[1] = ws->lt[1];
+}
+
+void
 showhide(Client *c)
 {
 	if (!c)
 		return;
-	if (ISVISIBLE(c)) {
+	if (ISVISIBLE(c) && INWORKSPACE(c)) {
 		/* show clients top down */
 		XMoveWindow(dpy, c->win, c->x, c->y);
 		if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) && !c->isfullscreen)
@@ -1674,6 +1725,7 @@ tag(const Arg *arg)
 		focus(NULL);
 		arrange(selmon);
 	}
+    updateworkspace(selmon->selws);
 }
 
 void
@@ -1748,6 +1800,7 @@ toggletag(const Arg *arg)
 		focus(NULL);
 		arrange(selmon);
 	}
+    updateworkspace(selmon->selws);
 }
 
 void
@@ -1760,6 +1813,13 @@ toggleview(const Arg *arg)
 		focus(NULL);
 		arrange(selmon);
 	}
+    updateworkspace(selmon->selws);
+}
+
+void
+switchworkspace(const Arg *arg) {
+    //set workspace to workspace no. *arg.i
+    selworkspace(&workspaces[arg->i]); //???
 }
 
 void
@@ -2049,6 +2109,21 @@ updatewmhints(Client *c)
 }
 
 void
+updateworkspace(Workspace *ws)
+{
+    /* Ensure workspace is initialised? */
+    if (!ws) initworkspace(ws);
+    // probably unnecessary
+    // set *ws values to selmon's values (mfact, nmaster, seltags, etc)
+    ws->mfact = selmon->mfact;
+    ws->nmaster = selmon->nmaster;
+    ws->seltags = selmon->seltags;
+    ws->sellt = selmon->sellt;
+    ws->lt[0] = selmon->lt[0];
+    ws->lt[1] = selmon->lt[1];
+}
+
+void
 view(const Arg *arg)
 {
 	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
@@ -2057,6 +2132,7 @@ view(const Arg *arg)
 	if (arg->ui & TAGMASK)
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
 	focus(NULL);
+    updateworkspace(selmon->selws);
 	arrange(selmon);
 }
 
