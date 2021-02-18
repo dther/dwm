@@ -15,10 +15,10 @@ the way I want them to.
  - `workspace(const Arg* arg)` -
    Switches to specific workspace.
  - Client workspace ownership + Hiding
+ - Tags only show window presence in the active workspace
 
 ## Planned
 
  - Workspace bar, like the tag bar
- - Tags only show window presence in the active workspace
  - Some way of moving windows from workspaces...
    Haven't figured it out yet.
