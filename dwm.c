@@ -726,7 +726,9 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
-		occ |= c->tags;
+        if (c->ws == m->ws)
+            /* only draw occupied tag markers for clients in this workspace */
+            occ |= c->tags;
 		if (c->isurgent)
 			urg |= c->tags;
 	}
@@ -1656,8 +1658,8 @@ setws(int nws)
 	    selmon->lt[0] = workspaces[selmon->ws].lt[0];
 	    selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
 	    selmon->lt[1] = workspaces[selmon->ws].lt[1];
-        arrange(selmon);
     }
+    arrange(selmon);
 }
 
 void
