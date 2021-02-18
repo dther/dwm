@@ -98,7 +98,7 @@ struct Client {
 	Client *next;
 	Client *snext;
 	Monitor *mon;
-    int ws;
+	int ws;
 	Window win;
 };
 
@@ -325,7 +325,7 @@ applyrules(Client *c)
 	if (ch.res_name)
 		XFree(ch.res_name);
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
-    c->ws = c->mon->ws;
+	c->ws = c->mon->ws;
 }
 
 int
@@ -726,9 +726,9 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
-        if (c->ws == m->ws)
-            /* only draw occupied tag markers for clients in this workspace */
-            occ |= c->tags;
+	    if (c->ws == m->ws)
+	        /* only draw occupied tag markers for clients in this workspace */
+	        occ |= c->tags;
 		if (c->isurgent)
 			urg |= c->tags;
 	}
@@ -1053,7 +1053,7 @@ manage(Window w, XWindowAttributes *wa)
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
-        c->ws = t->mon->ws;
+	    c->ws = t->mon->ws;
 	} else {
 		c->mon = selmon;
 		applyrules(c);
@@ -1633,23 +1633,23 @@ seturgent(Client *c, int urg)
 void
 setws(int nws)
 {
-    /* Save current screen configuration to workspace,
-     * then set current workspace to workspaces[nws],
-     * and switch the screen configuration appropriately. */
-    workspaces[selmon->ws].mfact = selmon->mfact;
-    workspaces[selmon->ws].nmaster = selmon->nmaster;
-    workspaces[selmon->ws].seltags = selmon->seltags;
-    workspaces[selmon->ws].sellt = selmon->sellt;
-    workspaces[selmon->ws].tagset[0] = selmon->tagset[0];
-    workspaces[selmon->ws].lt[0] = selmon->lt[0];
-    workspaces[selmon->ws].tagset[1] = selmon->tagset[1];
-    workspaces[selmon->ws].lt[1] = selmon->lt[1];
+	/* Save current screen configuration to workspace,
+	 * then set current workspace to workspaces[nws],
+	 * and switch the screen configuration appropriately. */
+	workspaces[selmon->ws].mfact = selmon->mfact;
+	workspaces[selmon->ws].nmaster = selmon->nmaster;
+	workspaces[selmon->ws].seltags = selmon->seltags;
+	workspaces[selmon->ws].sellt = selmon->sellt;
+	workspaces[selmon->ws].tagset[0] = selmon->tagset[0];
+	workspaces[selmon->ws].lt[0] = selmon->lt[0];
+	workspaces[selmon->ws].tagset[1] = selmon->tagset[1];
+	workspaces[selmon->ws].lt[1] = selmon->lt[1];
 
-    if (nws < LENGTH(workspaces))
-        selmon->ws = nws;
-    if (workspaces[selmon->ws].tagset[0]) {
-        /* Only set and rearrange if the new workspace has a tagset
-         * If it doesn't, just assume it's new/empty and don't bother. */
+	if (nws < LENGTH(workspaces))
+	    selmon->ws = nws;
+	if (workspaces[selmon->ws].tagset[0]) {
+	    /* Only set and rearrange if the new workspace has a tagset
+	     * If it doesn't, just assume it's new/empty and don't bother. */
 	    selmon->mfact = workspaces[selmon->ws].mfact;
 	    selmon->nmaster = workspaces[selmon->ws].nmaster;
 	    selmon->seltags = workspaces[selmon->ws].seltags;
@@ -1658,8 +1658,8 @@ setws(int nws)
 	    selmon->lt[0] = workspaces[selmon->ws].lt[0];
 	    selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
 	    selmon->lt[1] = workspaces[selmon->ws].lt[1];
-    }
-    arrange(selmon);
+	}
+	arrange(selmon);
 }
 
 void
@@ -2130,7 +2130,7 @@ wintomon(Window w)
 
 void
 workspace(const Arg *arg) {
-    setws(arg->i);
+	setws(arg->i);
 }
 
 /* There's no way to check accesses to destroyed windows, thus those cases are
