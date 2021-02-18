@@ -132,7 +132,7 @@ struct Monitor {
 	Monitor *next;
 	Window barwin;
 	const Layout *lt[2];
-	int ws;
+	int ws; /* Selected workspace */
 };
 
 struct Workspace {
@@ -216,6 +216,7 @@ static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
+static void setws(int ws);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
@@ -242,6 +243,7 @@ static void updatewmhints(Client *c);
 static void view(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
+static void workspace(const Arg *arg);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
@@ -1624,6 +1626,38 @@ seturgent(Client *c, int urg)
 }
 
 void
+setws(int nws)
+{
+    /* Save current screen configuration to workspace,
+     * then set current workspace to workspaces[nws],
+     * and switch the screen configuration appropriately. */
+    workspaces[selmon->ws].mfact = selmon->mfact;
+    workspaces[selmon->ws].nmaster = selmon->nmaster;
+    workspaces[selmon->ws].seltags = selmon->seltags;
+    workspaces[selmon->ws].sellt = selmon->sellt;
+    workspaces[selmon->ws].tagset[0] = selmon->tagset[0];
+    workspaces[selmon->ws].lt[0] = selmon->lt[0];
+    workspaces[selmon->ws].tagset[1] = selmon->tagset[1];
+    workspaces[selmon->ws].lt[1] = selmon->lt[1];
+
+    if (nws < LENGTH(workspaces))
+        selmon->ws = nws;
+    if (workspaces[selmon->ws].tagset[0]) {
+        /* Only set and rearrange if the new workspace has a tagset
+         * If it doesn't, just assume it's new/empty and don't bother. */
+	    selmon->mfact = workspaces[selmon->ws].mfact;
+	    selmon->nmaster = workspaces[selmon->ws].nmaster;
+	    selmon->seltags = workspaces[selmon->ws].seltags;
+	    selmon->sellt = workspaces[selmon->ws].sellt;
+	    selmon->tagset[0] = workspaces[selmon->ws].tagset[0];
+	    selmon->lt[0] = workspaces[selmon->ws].lt[0];
+	    selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
+	    selmon->lt[1] = workspaces[selmon->ws].lt[1];
+        arrange(selmon);
+    }
+}
+
+void
 showhide(Client *c)
 {
 	if (!c)
@@ -2087,6 +2121,11 @@ wintomon(Window w)
 	if ((c = wintoclient(w)))
 		return c->mon;
 	return selmon;
+}
+
+void
+workspace(const Arg *arg) {
+    setws(arg->i);
 }
 
 /* There's no way to check accesses to destroyed windows, thus those cases are

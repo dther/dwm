@@ -43,6 +43,8 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
+static Workspace workspaces[2];
+
 /* key definitions */
 #define MODKEY Mod1Mask
 #define TAGKEYS(KEY,TAG) \
