@@ -839,6 +839,8 @@ focus(Client *c)
 	if (c) {
 		if (c->mon != selmon)
 			selmon = c->mon;
+		if (c->ws != selmon->ws)
+			setws(c->ws);
 		if (c->isurgent)
 			seturgent(c, 0);
 		detachstack(c);
