@@ -126,7 +126,7 @@ static Key keys[] = {
     { 0,                            HOLDKEY,   showalttag,       {0} },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
     { MODKEY,                       XK_n,      spawn,          {.v = connmancmd} },
-    { MODKEY,                       XK_q,      spawn,          {.v = bindcmd} },
+    { MODKEY|ShiftMask,                       XK_p,      spawn,          {.v = bindcmd} },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,			            XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
