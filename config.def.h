@@ -91,8 +91,8 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
-static char *wsnames[] = { "home", "misc"};
-static Workspace workspaces[2];
+static char *wsnames[] = { "home", "code", "draw", "chat", "misc"};
+static Workspace workspaces[4];
 
 /* key definitions */
 #define MODKEY Mod4Mask
@@ -159,10 +159,9 @@ static Key keys[] = {
     { MODKEY,                       XK_Down,   spawn,          {.v = mpctogglecmd} },
     { MODKEY,                       XK_Left,   spawn,          {.v = mpcprevcmd} },
     { MODKEY,                       XK_Right,  spawn,          {.v = mpcnextcmd} },
-	/* TEST KEYBINDS */
-	{ MODKEY, XK_z, workspace, {.i=0} },
-	{ MODKEY, XK_x, workspace, {.i=1} },
-	/* TEST KEYBINDS */
+	{ MODKEY,                       XK_w,      workspace,      {.i = 0} },
+	{ MODKEY,                       XK_q,      cycleworkspace, {.i = -1} },
+	{ MODKEY,                       XK_e,      cycleworkspace, {.i = +1} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
