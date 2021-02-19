@@ -1093,7 +1093,7 @@ manage(Window w, XWindowAttributes *wa)
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
-	    c->ws = t->mon->ws;
+		c->ws = t->mon->ws;
 	} else {
 		c->mon = selmon;
 		applyrules(c);
@@ -1686,18 +1686,18 @@ setws(int nws)
 	workspaces[selmon->ws].lt[1] = selmon->lt[1];
 
 	if (nws < LENGTH(workspaces) && nws >= 0)
-	    selmon->ws = nws;
+		selmon->ws = nws;
 	if (workspaces[selmon->ws].tagset[0]) {
-	    /* Only set if the new workspace has a tagset
-	     * If it doesn't, just assume it's new/empty and don't bother. */
-	    selmon->mfact = workspaces[selmon->ws].mfact;
-	    selmon->nmaster = workspaces[selmon->ws].nmaster;
-	    selmon->seltags = workspaces[selmon->ws].seltags;
-	    selmon->sellt = workspaces[selmon->ws].sellt;
-	    selmon->tagset[0] = workspaces[selmon->ws].tagset[0];
-	    selmon->lt[0] = workspaces[selmon->ws].lt[0];
-	    selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
-	    selmon->lt[1] = workspaces[selmon->ws].lt[1];
+		/* Only set if the new workspace has a tagset
+		 * If it doesn't, just assume it's new/empty and don't bother. */
+		selmon->mfact = workspaces[selmon->ws].mfact;
+		selmon->nmaster = workspaces[selmon->ws].nmaster;
+		selmon->seltags = workspaces[selmon->ws].seltags;
+		selmon->sellt = workspaces[selmon->ws].sellt;
+		selmon->tagset[0] = workspaces[selmon->ws].tagset[0];
+		selmon->lt[0] = workspaces[selmon->ws].lt[0];
+		selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
+		selmon->lt[1] = workspaces[selmon->ws].lt[1];
 	}
 	arrange(selmon);
 	focus(NULL);
