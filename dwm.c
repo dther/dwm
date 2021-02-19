@@ -721,7 +721,7 @@ drawbar(Monitor *m)
 	int x, w, tw = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
-	unsigned int i, occ = 0, urg = 0;
+	unsigned int i, occ = 0, urg = 0, wsocc = 0, wsurg = 0;
 	Client *c;
 
 	/* draw status first so it can be overdrawn by tags later */
@@ -732,11 +732,14 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
+		wsocc |= 1 << c->ws;
 	    if (c->ws == m->ws)
 	        /* only draw occupied tag markers for clients in this workspace */
 	        occ |= c->tags;
-		if (c->isurgent)
+		if (c->isurgent) {
 			urg |= c->tags;
+			wsurg |= 1 << c->ws;
+		}
 	}
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
@@ -777,7 +780,12 @@ drawbar(Monitor *m)
 		w = TEXTW(wsnames[i]);
 		drw_setscheme(drw, scheme[m->ws == i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x,
-				0, w, bh, lrpad / 2, wsnames[i], urg);
+				0, w, bh, lrpad / 2, wsnames[i], wsurg & 1 << i);
+
+		if (wsocc & 1 << i)
+			drw_rect(drw, x + boxs, boxs, boxw, boxw,
+				m == selmon && selmon->sel && selmon->sel->ws == i,
+				wsurg & 1 << i);
 		x += w;
 	}
 	drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
