@@ -92,7 +92,7 @@ static const Layout layouts[] = {
 };
 
 static char *wsnames[] = { "home", "code", "draw", "chat", "misc"};
-static Workspace workspaces[4];
+static Workspace workspaces[5];
 
 /* key definitions */
 #define MODKEY Mod4Mask
