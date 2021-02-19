@@ -746,7 +746,7 @@ drawbar(Monitor *m)
 		if (c->ws == m->ws)
 	        /* only draw occupied tag markers for clients in this workspace */
 	    	occ |= c->tags;
-		if (c->isurgent) {
+		if (c->isurgent && c->ws == m->ws) {
 			urg |= c->tags;
 			wsurg |= 1 << c->ws;
 		}
