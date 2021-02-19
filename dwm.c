@@ -51,8 +51,8 @@
 #define BUTTONMASK              (ButtonPressMask|ButtonReleaseMask)
 #define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
-                               * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
-#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
+	                           * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
+#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]) && (C->ws == C->mon->ws))
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
@@ -79,11 +79,11 @@
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
 enum { SchemeNorm, SchemeSel }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
-       NetWMFullscreen, NetActiveWindow, NetWMWindowType,
-       NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
+	   NetWMFullscreen, NetActiveWindow, NetWMWindowType,
+	   NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-       ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+	   ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
 	int i;
@@ -102,6 +102,8 @@ typedef struct {
 
 typedef struct Monitor Monitor;
 typedef struct Client Client;
+typedef struct Workspace Workspace;
+
 struct Client {
 	char name[256];
 	float mina, maxa;
@@ -116,6 +118,7 @@ struct Client {
 	Client *snext;
 	Client *swallowing;
 	Monitor *mon;
+	int ws;
 	Window win;
 };
 
@@ -153,6 +156,16 @@ struct Monitor {
 	Monitor *next;
 	Window barwin;
 	Window extrabarwin;
+	const Layout *lt[2];
+	int ws; /* Selected workspace */
+};
+
+struct Workspace {
+	float mfact;
+	int nmaster;
+	unsigned int seltags;
+	unsigned int sellt;
+	unsigned int tagset[2];
 	const Layout *lt[2];
     unsigned int alttag;
 };
@@ -236,6 +249,7 @@ static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
+static void setws(int ws);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void sighup(int unused);
@@ -267,6 +281,7 @@ static void updatewmhints(Client *c);
 static void view(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
+static void workspace(const Arg *arg);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
@@ -382,6 +397,7 @@ applyrules(Client *c)
 	if (ch.res_name)
 		XFree(ch.res_name);
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+	c->ws = c->mon->ws;
 }
 
 int
@@ -834,7 +850,7 @@ drawbar(Monitor *m)
 	int x, w, wdelta, tw = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
-	unsigned int i, occ = 0, urg = 0;
+	unsigned int i, occ = 0, urg = 0, wsocc = 0, wsurg = 0;
 	Client *c;
 
 	/* draw status first so it can be overdrawn by tags later */
@@ -845,9 +861,14 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
-		occ |= c->tags;
-		if (c->isurgent)
+		wsocc |= 1 << c->ws;
+	    if (c->ws == m->ws)
+	        /* only draw occupied tag markers for clients in this workspace */
+	        occ |= c->tags;
+		if (c->isurgent) {
 			urg |= c->tags;
+			wsurg |= 1 << c->ws;
+		}
 	}
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
@@ -879,11 +900,26 @@ drawbar(Monitor *m)
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 
-	if (m == selmon) { /* extra status is only drawn on selected monitor */
-		drw_setscheme(drw, scheme[SchemeNorm]);
-		drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
-		drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
+	/* Extra bar */
+	drw_setscheme(drw, scheme[SchemeNorm]);
+	drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
+
+	for (i = 0, x = m->ww; i < LENGTH(wsnames); i++) 
+	    x -= TEXTW(wsnames[i]);
+
+	for (i = 0; i < LENGTH(wsnames); i++) {
+		w = TEXTW(wsnames[i]);
+		drw_setscheme(drw, scheme[m->ws == i ? SchemeSel : SchemeNorm]);
+		drw_text(drw, x,
+				0, w, bh, lrpad / 2, wsnames[i], wsurg & 1 << i);
+
+		if (wsocc & 1 << i)
+			drw_rect(drw, x + boxs, boxs, boxw, boxw,
+				m == selmon && selmon->sel && selmon->sel->ws == i,
+				wsurg & 1 << i);
+		x += w;
 	}
+	drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
 }
 
 void
@@ -1226,6 +1262,7 @@ manage(Window w, XWindowAttributes *wa)
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
+	    c->ws = t->mon->ws;
 	} else {
 		c->mon = selmon;
 		applyrules(c);
@@ -1835,6 +1872,39 @@ seturgent(Client *c, int urg)
 	wmh->flags = urg ? (wmh->flags | XUrgencyHint) : (wmh->flags & ~XUrgencyHint);
 	XSetWMHints(dpy, c->win, wmh);
 	XFree(wmh);
+}
+
+void
+setws(int nws)
+{
+	/* Save current screen configuration to workspace,
+	 * then set current workspace to workspaces[nws],
+	 * and switch the screen configuration appropriately. */
+	workspaces[selmon->ws].mfact = selmon->mfact;
+	workspaces[selmon->ws].nmaster = selmon->nmaster;
+	workspaces[selmon->ws].seltags = selmon->seltags;
+	workspaces[selmon->ws].sellt = selmon->sellt;
+	workspaces[selmon->ws].tagset[0] = selmon->tagset[0];
+	workspaces[selmon->ws].lt[0] = selmon->lt[0];
+	workspaces[selmon->ws].tagset[1] = selmon->tagset[1];
+	workspaces[selmon->ws].lt[1] = selmon->lt[1];
+
+	if (nws < LENGTH(workspaces))
+	    selmon->ws = nws;
+	if (workspaces[selmon->ws].tagset[0]) {
+	    /* Only set if the new workspace has a tagset
+	     * If it doesn't, just assume it's new/empty and don't bother. */
+	    selmon->mfact = workspaces[selmon->ws].mfact;
+	    selmon->nmaster = workspaces[selmon->ws].nmaster;
+	    selmon->seltags = workspaces[selmon->ws].seltags;
+	    selmon->sellt = workspaces[selmon->ws].sellt;
+	    selmon->tagset[0] = workspaces[selmon->ws].tagset[0];
+	    selmon->lt[0] = workspaces[selmon->ws].lt[0];
+	    selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
+	    selmon->lt[1] = workspaces[selmon->ws].lt[1];
+	}
+	arrange(selmon);
+	focus(NULL);
 }
 
 void
@@ -2492,6 +2562,11 @@ wintomon(Window w)
 	if ((c = wintoclient(w)))
 		return c->mon;
 	return selmon;
+}
+
+void
+workspace(const Arg *arg) {
+	setws(arg->i);
 }
 
 /* There's no way to check accesses to destroyed windows, thus those cases are
