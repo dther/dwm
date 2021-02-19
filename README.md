@@ -5,6 +5,8 @@ My personal fork of suckless'
 
 ## Features
 
+ * Advanced workspace management, inspired by
+ [awm](https://github.com/Alpt/awm)
  * Siji tag icons
  * tmux scratchpad (Super+\`)
  * Extra bar
@@ -13,14 +15,10 @@ My personal fork of suckless'
 
 ## Planned features
 
- * Advanced workspace management
-    - Workspaces that work in tandem and in addition to tags, rather than
-      replacing them.
-    - A workspace will consist of a set of windows, their tags, the current
-      layout and the set of selected tags.
-    - Workspaces should be viewable in the bottom right on the extra bar.
  * Fuzzy window finding
-    - A fuzzy-matching dmenu prompt with a list of all windows and workspaces.
-      The selected window/workspace is switched to.
-    - If the window isn't in the selected workspace, switch to that workspace.
-    - Otherwise, focus window.
+    - Using a fuzzy dmenu prompt, select windows and automatically
+      switch to them.
+    - Needs something like
+   [dwmfifo](https://dwm.suckless.org/patches/dwmfifo/) or
+   [dwmc](https://dwm.suckless.org/patches/dwmc/),
+      xdotool's windowactivate doesn't work with dwm for some reason.
