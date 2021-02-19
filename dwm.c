@@ -158,6 +158,7 @@ struct Monitor {
 	Window extrabarwin;
 	const Layout *lt[2];
 	int ws; /* Selected workspace */
+	unsigned int alttag;
 };
 
 struct Workspace {
