@@ -1670,7 +1670,7 @@ setws(int nws)
 	if (nws < LENGTH(workspaces))
 	    selmon->ws = nws;
 	if (workspaces[selmon->ws].tagset[0]) {
-	    /* Only set and rearrange if the new workspace has a tagset
+	    /* Only set if the new workspace has a tagset
 	     * If it doesn't, just assume it's new/empty and don't bother. */
 	    selmon->mfact = workspaces[selmon->ws].mfact;
 	    selmon->nmaster = workspaces[selmon->ws].nmaster;
@@ -1682,6 +1682,7 @@ setws(int nws)
 	    selmon->lt[1] = workspaces[selmon->ws].lt[1];
 	}
 	arrange(selmon);
+	focus(NULL);
 }
 
 void
