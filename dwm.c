@@ -200,6 +200,7 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
+static void mvtoworkspace(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
 static void propertynotify(XEvent *e);
@@ -213,6 +214,7 @@ static void run(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
+static void sendws(Client *c, int ws);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
@@ -1252,6 +1254,14 @@ movemouse(const Arg *arg)
 	}
 }
 
+void
+mvtoworkspace(const Arg *arg)
+{
+	if (arg->i == selmon->ws)
+		return;
+	sendws(selmon->sel, arg->i);
+}
+
 Client *
 nexttiled(Client *c)
 {
@@ -1477,8 +1487,20 @@ sendmon(Client *c, Monitor *m)
 	detachstack(c);
 	c->mon = m;
 	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
+	c->ws = m->ws; /* assign to monitor current workspace */
 	attach(c);
 	attachstack(c);
+	focus(NULL);
+	arrange(NULL);
+}
+
+void
+sendws(Client *c, int ws) {
+	if (c->ws == ws)
+		return;
+	unfocus(c, 1);
+	applyrules(c); /* act as though window was just initialised */
+	c->ws = ws;
 	focus(NULL);
 	arrange(NULL);
 }
