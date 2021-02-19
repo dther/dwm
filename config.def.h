@@ -44,6 +44,7 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
+static char *wsnames[] = { "home", "misc"};
 static Workspace workspaces[2];
 
 /* key definitions */

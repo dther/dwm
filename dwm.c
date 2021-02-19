@@ -766,11 +766,21 @@ drawbar(Monitor *m)
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 
-	if (m == selmon) { /* extra status is only drawn on selected monitor */
-		drw_setscheme(drw, scheme[SchemeNorm]);
-		drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
-		drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
+	/* Extra bar */
+	drw_setscheme(drw, scheme[SchemeNorm]);
+	drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
+
+	for (i = 0, x = m->ww; i < LENGTH(wsnames); i++) 
+	    x -= LENGTH(wsnames) * TEXTW(wsnames[i]);
+
+	for (i = 0; i < LENGTH(wsnames); i++) {
+		w = TEXTW(wsnames[i]);
+		drw_setscheme(drw, scheme[m->ws == i ? SchemeSel : SchemeNorm]);
+		drw_text(drw, x,
+				0, w, bh, lrpad / 2, wsnames[i], urg);
+		x += w;
 	}
+	drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
 }
 
 void
