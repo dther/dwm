@@ -16,9 +16,9 @@ the way I want them to.
    Switches to specific workspace.
  - Client workspace ownership + Hiding
  - Tags only show window presence in the active workspace
+ - Workspace bar, like the tag bar
 
 ## Planned
 
- - Workspace bar, like the tag bar
  - Some way of moving windows from workspaces...
    Haven't figured it out yet.
