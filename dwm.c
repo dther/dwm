@@ -172,6 +172,7 @@ static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
 static Monitor *createmon(void);
+static void cycleworkspace(const Arg *arg);
 static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
@@ -668,6 +669,13 @@ createmon(void)
 }
 
 void
+cycleworkspace(const Arg *arg)
+{
+    int nws = selmon->ws + arg->i;
+    setws(nws);
+}
+
+void
 destroynotify(XEvent *e)
 {
 	Client *c;
@@ -733,9 +741,9 @@ drawbar(Monitor *m)
 
 	for (c = m->clients; c; c = c->next) {
 		wsocc |= 1 << c->ws;
-	    if (c->ws == m->ws)
+		if (c->ws == m->ws)
 	        /* only draw occupied tag markers for clients in this workspace */
-	        occ |= c->tags;
+	    	occ |= c->tags;
 		if (c->isurgent) {
 			urg |= c->tags;
 			wsurg |= 1 << c->ws;
@@ -1677,7 +1685,7 @@ setws(int nws)
 	workspaces[selmon->ws].tagset[1] = selmon->tagset[1];
 	workspaces[selmon->ws].lt[1] = selmon->lt[1];
 
-	if (nws < LENGTH(workspaces))
+	if (nws < LENGTH(workspaces) && nws >= 0)
 	    selmon->ws = nws;
 	if (workspaces[selmon->ws].tagset[0]) {
 	    /* Only set if the new workspace has a tagset
