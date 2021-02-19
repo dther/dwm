@@ -771,7 +771,7 @@ drawbar(Monitor *m)
 	drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
 
 	for (i = 0, x = m->ww; i < LENGTH(wsnames); i++) 
-	    x -= LENGTH(wsnames) * TEXTW(wsnames[i]);
+	    x -= TEXTW(wsnames[i]);
 
 	for (i = 0; i < LENGTH(wsnames); i++) {
 		w = TEXTW(wsnames[i]);
