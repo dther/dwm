@@ -65,7 +65,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 	   NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-	   ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+	   ClkClientWin, ClkRootWin, ClkLast, ClkWorkspaceBar }; /* clicks */
 
 typedef union {
 	int i;
@@ -471,11 +471,21 @@ buttonpress(XEvent *e)
 		restack(selmon);
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		click = ClkClientWin;
+	} else if (ev->window == selmon->extrabarwin) {
+		i = 0;
+		x = selmon->ww;
+		while (ev->x < x && ++i <= LENGTH(wsnames))
+			x -= TEXTW(wsnames[LENGTH(wsnames) - i]);
+		if (i <= LENGTH(wsnames)) {
+			click = ClkWorkspaceBar;
+			arg.i = LENGTH(wsnames) - i;
+		} else
+			click = ClkStatusText;
 	}
 	for (i = 0; i < LENGTH(buttons); i++)
 		if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
 		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
-			buttons[i].func(click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
+			buttons[i].func((click == ClkTagBar || click == ClkWorkspaceBar) && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
 }
 
 void
