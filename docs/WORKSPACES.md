@@ -17,8 +17,12 @@ the way I want them to.
  - Client workspace ownership + Hiding
  - Tags only show window presence in the active workspace
  - Workspace bar, like the tag bar
+ - Clickable workspace bar
+ - Some way of moving windows from workspaces
 
 ## Planned
 
- - Some way of moving windows from workspaces...
-   Haven't figured it out yet.
+ - Keyboard method of switching and moving windows to workspaces,
+   probably utilising dwmfifo or fsignal.
+ - Rules for sending clients to workspaces
+   (that only apply when not moving them to new ones)
