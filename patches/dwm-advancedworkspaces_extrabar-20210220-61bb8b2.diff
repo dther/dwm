@@ -1,0 +1,117 @@
+diff --git a/config.def.h b/config.def.h
+index 32698ce..d649f4b 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -44,6 +44,7 @@ static const Layout layouts[] = {
+ 	{ "[M]",      monocle },
+ };
+ 
++static char *wsnames[] = { "home", "code", "chat", "misc"};
+ static Workspace workspaces[4];
+ 
+ /* key definitions */
+@@ -117,4 +118,6 @@ static Button buttons[] = {
+ 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
+ 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
+ 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
++	{ ClkWorkspaceBar,      0,              Button1,        workspace,      {0} },
++	{ ClkWorkspaceBar,      MODKEY,         Button1,        mvtoworkspace,  {0} },
+ };
+diff --git a/dwm.c b/dwm.c
+index 3e9420b..47ee43e 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -61,11 +61,11 @@
+ enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
+ enum { SchemeNorm, SchemeSel }; /* color schemes */
+ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
+-       NetWMFullscreen, NetActiveWindow, NetWMWindowType,
+-       NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
++	   NetWMFullscreen, NetActiveWindow, NetWMWindowType,
++	   NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
+ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
+ enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+-       ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
++	   ClkClientWin, ClkRootWin, ClkLast, ClkWorkspaceBar }; /* clicks */
+ 
+ typedef union {
+ 	int i;
+@@ -471,11 +471,21 @@ buttonpress(XEvent *e)
+ 		restack(selmon);
+ 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
+ 		click = ClkClientWin;
++	} else if (ev->window == selmon->extrabarwin) {
++		i = 0;
++		x = selmon->ww;
++		while (ev->x < x && ++i <= LENGTH(wsnames))
++			x -= TEXTW(wsnames[LENGTH(wsnames) - i]);
++		if (i <= LENGTH(wsnames)) {
++			click = ClkWorkspaceBar;
++			arg.i = LENGTH(wsnames) - i;
++		} else
++			click = ClkStatusText;
+ 	}
+ 	for (i = 0; i < LENGTH(buttons); i++)
+ 		if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
+ 		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
+-			buttons[i].func(click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
++			buttons[i].func((click == ClkTagBar || click == ClkWorkspaceBar) && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
+ }
+ 
+ void
+@@ -731,7 +741,7 @@ drawbar(Monitor *m)
+ 	int x, w, tw = 0;
+ 	int boxs = drw->fonts->h / 9;
+ 	int boxw = drw->fonts->h / 6 + 2;
+-	unsigned int i, occ = 0, urg = 0;
++	unsigned int i, occ = 0, urg = 0, wsocc = 0, wsurg = 0;
+ 	Client *c;
+ 
+ 	/* draw status first so it can be overdrawn by tags later */
+@@ -742,11 +752,14 @@ drawbar(Monitor *m)
+ 	}
+ 
+ 	for (c = m->clients; c; c = c->next) {
++		wsocc |= 1 << c->ws;
+ 		if (c->ws == m->ws)
+ 	        /* only draw occupied tag markers for clients in this workspace */
+ 	    	occ |= c->tags;
+-		if (c->isurgent && c->ws == m->ws)
++		if (c->isurgent && c->ws == m->ws) {
+ 			urg |= c->tags;
++			wsurg |= 1 << c->ws;
++		}
+ 	}
+ 	x = 0;
+ 	for (i = 0; i < LENGTH(tags); i++) {
+@@ -776,11 +789,26 @@ drawbar(Monitor *m)
+ 	}
+ 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
+ 
+-	if (m == selmon) { /* extra status is only drawn on selected monitor */
+-		drw_setscheme(drw, scheme[SchemeNorm]);
+-		drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
+-		drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
++	/* Extra bar */
++	drw_setscheme(drw, scheme[SchemeNorm]);
++	drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
++
++	for (i = 0, x = m->ww; i < LENGTH(wsnames); i++) 
++	    x -= TEXTW(wsnames[i]);
++
++	for (i = 0; i < LENGTH(wsnames); i++) {
++		w = TEXTW(wsnames[i]);
++		drw_setscheme(drw, scheme[m->ws == i ? SchemeSel : SchemeNorm]);
++		drw_text(drw, x,
++				0, w, bh, lrpad / 2, wsnames[i], wsurg & 1 << i);
++
++		if (wsocc & 1 << i)
++			drw_rect(drw, x + boxs, boxs, boxw, boxw,
++				m == selmon && selmon->sel && selmon->sel->ws == i,
++				wsurg & 1 << i);
++		x += w;
+ 	}
++	drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
+ }
+ 
+ void
