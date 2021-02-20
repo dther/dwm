@@ -83,7 +83,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 	   NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-	   ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+	   ClkClientWin, ClkRootWin, ClkLast, ClkWorkspaceBar }; /* clicks */
 
 typedef union {
 	int i;
@@ -229,6 +229,7 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
+static void mvtoworkspace(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *);
 static void propertynotify(XEvent *e);
@@ -243,6 +244,7 @@ static void runAutostart(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
+static void sendws(Client *c, int ws);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
@@ -594,11 +596,21 @@ buttonpress(XEvent *e)
 		restack(selmon);
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		click = ClkClientWin;
+	} else if (ev->window == selmon->extrabarwin) {
+		i = 0;
+		x = selmon->ww;
+		while (ev->x < x && ++i <= LENGTH(wsnames))
+			x -= TEXTW(wsnames[LENGTH(wsnames) - i]);
+		if (i <= LENGTH(wsnames)) {
+			click = ClkWorkspaceBar;
+			arg.i = LENGTH(wsnames) - i;
+		} else
+			click = ClkStatusText;
 	}
 	for (i = 0; i < LENGTH(buttons); i++)
 		if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
 		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
-			buttons[i].func(click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
+			buttons[i].func((click == ClkTagBar || click == ClkWorkspaceBar) && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
 }
 
 void
@@ -871,10 +883,10 @@ drawbar(Monitor *m)
 
 	for (c = m->clients; c; c = c->next) {
 		wsocc |= 1 << c->ws;
-	    if (c->ws == m->ws)
+		if (c->ws == m->ws)
 	        /* only draw occupied tag markers for clients in this workspace */
-	        occ |= c->tags;
-		if (c->isurgent) {
+	    	occ |= c->tags;
+		if (c->isurgent && c->ws == m->ws) {
 			urg |= c->tags;
 			wsurg |= 1 << c->ws;
 		}
@@ -1273,7 +1285,7 @@ manage(Window w, XWindowAttributes *wa)
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
-	    c->ws = t->mon->ws;
+		c->ws = t->mon->ws;
 	} else {
 		c->mon = selmon;
 		applyrules(c);
@@ -1440,6 +1452,14 @@ movemouse(const Arg *arg)
 		selmon = m;
 		focus(NULL);
 	}
+}
+
+void
+mvtoworkspace(const Arg *arg)
+{
+	if (arg->i == selmon->ws)
+		return;
+	sendws(selmon->sel, arg->i);
 }
 
 Client *
@@ -1679,8 +1699,20 @@ sendmon(Client *c, Monitor *m)
 	detachstack(c);
 	c->mon = m;
 	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
+	c->ws = m->ws; /* assign to monitor current workspace */
 	attach(c);
 	attachstack(c);
+	focus(NULL);
+	arrange(NULL);
+}
+
+void
+sendws(Client *c, int ws) {
+	if (!c || c->ws == ws)
+		return;
+	unfocus(c, 1);
+	applyrules(c); /* act as though window was just initialised */
+	c->ws = ws;
 	focus(NULL);
 	arrange(NULL);
 }
@@ -1901,18 +1933,18 @@ setws(int nws)
 	workspaces[selmon->ws].lt[1] = selmon->lt[1];
 
 	if (nws < LENGTH(workspaces) && nws >= 0)
-	    selmon->ws = nws;
+		selmon->ws = nws;
 	if (workspaces[selmon->ws].tagset[0]) {
-	    /* Only set if the new workspace has a tagset
-	     * If it doesn't, just assume it's new/empty and don't bother. */
-	    selmon->mfact = workspaces[selmon->ws].mfact;
-	    selmon->nmaster = workspaces[selmon->ws].nmaster;
-	    selmon->seltags = workspaces[selmon->ws].seltags;
-	    selmon->sellt = workspaces[selmon->ws].sellt;
-	    selmon->tagset[0] = workspaces[selmon->ws].tagset[0];
-	    selmon->lt[0] = workspaces[selmon->ws].lt[0];
-	    selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
-	    selmon->lt[1] = workspaces[selmon->ws].lt[1];
+		/* Only set if the new workspace has a tagset
+		 * If it doesn't, just assume it's new/empty and don't bother. */
+		selmon->mfact = workspaces[selmon->ws].mfact;
+		selmon->nmaster = workspaces[selmon->ws].nmaster;
+		selmon->seltags = workspaces[selmon->ws].seltags;
+		selmon->sellt = workspaces[selmon->ws].sellt;
+		selmon->tagset[0] = workspaces[selmon->ws].tagset[0];
+		selmon->lt[0] = workspaces[selmon->ws].lt[0];
+		selmon->tagset[1] = workspaces[selmon->ws].tagset[1];
+		selmon->lt[1] = workspaces[selmon->ws].lt[1];
 	}
 	arrange(selmon);
 	focus(NULL);
