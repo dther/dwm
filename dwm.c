@@ -1506,7 +1506,7 @@ sendmon(Client *c, Monitor *m)
 
 void
 sendws(Client *c, int ws) {
-	if (c->ws == ws)
+	if (!c || c->ws == ws)
 		return;
 	unfocus(c, 1);
 	applyrules(c); /* act as though window was just initialised */
