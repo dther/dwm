@@ -18,7 +18,9 @@ My personal fork of suckless'
  * Fuzzy window finding
     - Using a fuzzy dmenu prompt, select windows and automatically
       switch to them.
-    - Needs something like
-   [dwmfifo](https://dwm.suckless.org/patches/dwmfifo/) or
-   [dwmc](https://dwm.suckless.org/patches/dwmc/),
-      xdotool's windowactivate doesn't work with dwm for some reason.
+    - Needs Extended Window Management Hints, like
+   [focusonnetactive](https://dwm.suckless.org/patches/focusonnetactive/) or
+   [ewmhtags](https://dwm.suckless.org/patches/ewmhtags/).
+ * dmenu workspaces selector
+    - something like [dwmfifo](https://dwm.suckless.org/patches/dwmfifo)
+      and a shell script is probably best for this.
