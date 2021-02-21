@@ -180,6 +180,7 @@ typedef struct {
 	int isterminal;
 	int noswallow;
 	int monitor;
+	int workspace;
 } Rule;
 
 /* function declarations */
@@ -377,6 +378,7 @@ applyrules(Client *c)
 	c->noswallow = -1;
 	c->isfloating = 0;
 	c->tags = 0;
+	c->ws = c->mon->ws;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
@@ -394,6 +396,7 @@ applyrules(Client *c)
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
 				c->mon = m;
+			c->ws = (r->workspace >= 0) ? r->workspace : c->mon->ws;
 		}
 	}
 	if (ch.res_class)
@@ -401,7 +404,6 @@ applyrules(Client *c)
 	if (ch.res_name)
 		XFree(ch.res_name);
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
-	c->ws = c->mon->ws;
 }
 
 int
@@ -810,8 +812,8 @@ createmon(void)
 void
 cycleworkspace(const Arg *arg)
 {
-    int nws = selmon->ws + arg->i;
-    setws(nws);
+	int nws = selmon->ws + arg->i;
+	setws(nws);
 }
 
 void
@@ -884,8 +886,8 @@ drawbar(Monitor *m)
 	for (c = m->clients; c; c = c->next) {
 		wsocc |= 1 << c->ws;
 		if (c->ws == m->ws)
-	        /* only draw occupied tag markers for clients in this workspace */
-	    	occ |= c->tags;
+			/* only draw occupied tag markers for clients in this workspace */
+			occ |= c->tags;
 		if (c->isurgent) {
 			urg |= (c->ws == m->ws) ? c->tags : 0;
 			wsurg |= 1 << c->ws;
