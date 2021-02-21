@@ -684,8 +684,8 @@ createmon(void)
 void
 cycleworkspace(const Arg *arg)
 {
-    int nws = selmon->ws + arg->i;
-    setws(nws);
+	int nws = selmon->ws + arg->i;
+	setws(nws);
 }
 
 void
@@ -755,8 +755,8 @@ drawbar(Monitor *m)
 	for (c = m->clients; c; c = c->next) {
 		wsocc |= 1 << c->ws;
 		if (c->ws == m->ws)
-	        /* only draw occupied tag markers for clients in this workspace */
-	    	occ |= c->tags;
+			/* only draw occupied tag markers for clients in this workspace */
+			occ |= c->tags;
 		if (c->isurgent) {
 			urg |= (c->ws == m->ws) ? c->tags : 0;
 			wsurg |= 1 << c->ws;
