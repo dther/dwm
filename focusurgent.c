@@ -1,15 +1,14 @@
 static void
 focusurgent(const Arg *arg) {
 	Client *c;
-	int i;
 	for(c=selmon->clients; c && !c->isurgent; c=c->next);
 	if(c) {
-		for(i=0; i < LENGTH(tags) && !((1 << i) & c->tags); i++);
-		if(i < LENGTH(tags)) {
-			const Arg a = {.ui = 1 << i};
-            setws(c->ws);
+		if(!ISVISIBLE(c)) {
+			const Arg a = {.ui = c->tags};
+			setws(c->ws);
 			view(&a);
-			focus(c);
 		}
+		if(ISVISIBLE(c))
+				focus(c);
 	}
 }
