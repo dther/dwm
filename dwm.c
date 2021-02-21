@@ -154,6 +154,7 @@ typedef struct {
 	unsigned int tags;
 	int isfloating;
 	int monitor;
+	int workspace;
 } Rule;
 
 /* function declarations */
@@ -324,6 +325,7 @@ applyrules(Client *c)
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
 				c->mon = m;
+			c->ws = r->workspace ? r->workspace : c->mon->ws;
 		}
 	}
 	if (ch.res_class)
@@ -331,7 +333,6 @@ applyrules(Client *c)
 	if (ch.res_name)
 		XFree(ch.res_name);
 	c->tags = c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
-	c->ws = c->mon->ws;
 }
 
 int
