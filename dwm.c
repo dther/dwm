@@ -325,7 +325,7 @@ applyrules(Client *c)
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
 				c->mon = m;
-			c->ws = r->workspace ? r->workspace : c->mon->ws;
+			c->ws = (r->workspace >= 0) ? r->workspace : c->mon->ws;
 		}
 	}
 	if (ch.res_class)

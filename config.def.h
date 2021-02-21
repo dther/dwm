@@ -27,9 +27,9 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class      instance    title       tags mask     isfloating   monitor   workspace*/
+	{ "Gimp",     NULL,       NULL,       0,            1,           -1,       0 },
+	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1,       0 },
 };
 
 /* layout(s) */
@@ -44,7 +44,7 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
-static char *wsnames[] = { "home", "code", "chat", "misc"};
+static char *wsnames[] = { "0", "1", "2", "3" };
 static Workspace workspaces[4];
 
 /* key definitions */
