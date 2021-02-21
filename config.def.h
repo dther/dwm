@@ -117,6 +117,7 @@ static const char *mpctogglecmd[] = { "mpc", "toggle", NULL };
 static const char *mpcstopcmd[] = { "mpc", "stop", NULL };
 static const char *mpcnextcmd[] = { "mpc", "next", NULL };
 static const char *mpcprevcmd[] = { "mpc", "prev", NULL };
+static const char *switchcmd[] = { "switch", NULL };
 
 #include "focusurgent.c"
 static Key keys[] = {
@@ -158,8 +159,8 @@ static Key keys[] = {
     { MODKEY,                       XK_Left,   spawn,          {.v = mpcprevcmd} },
     { MODKEY,                       XK_Right,  spawn,          {.v = mpcnextcmd} },
     { MODKEY,                       XK_u,      focusurgent,    {0} },
-	{ MODKEY,                       XK_w,      workspace,      {.i = 0} },
 	{ MODKEY,                       XK_q,      cycleworkspace, {.i = -1} },
+	{ MODKEY,                       XK_w,      spawn,          {.v = switchcmd} },
 	{ MODKEY,                       XK_e,      cycleworkspace, {.i = +1} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
