@@ -686,6 +686,10 @@ void
 cycleworkspace(const Arg *arg)
 {
 	int nws = selmon->ws + arg->i;
+	if (nws < 0)
+		nws = LENGTH(workspaces) - 1;
+	if (nws >= LENGTH(workspaces))
+		nws = 0;
 	setws(nws);
 }
 
