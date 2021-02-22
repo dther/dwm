@@ -117,7 +117,7 @@ static const char *mpctogglecmd[] = { "mpc", "toggle", NULL };
 static const char *mpcstopcmd[] = { "mpc", "stop", NULL };
 static const char *mpcnextcmd[] = { "mpc", "next", NULL };
 static const char *mpcprevcmd[] = { "mpc", "prev", NULL };
-static const char *switchcmd[] = { "switch", NULL };
+static const char *switchcmd[] = { "switch", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
 
 #include "focusurgent.c"
 static Key keys[] = {

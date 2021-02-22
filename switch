@@ -1,3 +1,5 @@
+#!/bin/sh
+
 windows=$(wmctrl -xl | tr -s '[:blank:]' | cut -d ' ' -f 3-3,5- | sed 's/^[a-zA-Z0-9-]*\.//' | sort | uniq)
 
 # Add spaces to align the WM_NAMEs of the windows
@@ -10,9 +12,9 @@ windows=$(echo "$windows" | \
                     $1 = ""; printf "%s\n", $0}')
 
 
-target=$(echo "$windows" | dmenu -l 10 -i -p switch: | tr -s '[:blank:]' | cut -d ' ' -f 2-)
+target=$(echo "$windows" | dmenu -l 10 -i -p switch: "$@" | tr -s '[:blank:]' | cut -d ' ' -f 2-)
 
-if [[ -n $target ]]; then
+if [ -n "$target" ]; then
     wmctrl -a "$target"
 fi
 
