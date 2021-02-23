@@ -10,5 +10,6 @@ focusurgent(const Arg *arg) {
 		}
 		if(ISVISIBLE(c))
 				focus(c);
+        restack(selmon);
 	}
 }
