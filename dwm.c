@@ -556,8 +556,10 @@ unswallow(Client *c)
 	XMapWindow(dpy, c->win);
 	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
 	setclientstate(c, NormalState);
+	configure(c);
 	focus(NULL);
 	arrange(c->mon);
+	updateclientlist();
 }
 
 void
