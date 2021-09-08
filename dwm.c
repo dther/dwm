@@ -821,6 +821,7 @@ cycleworkspace(const Arg *arg)
 	if (nws >= LENGTH(workspaces))
 		nws = 0;
 	setws(nws);
+	focus(NULL);
 }
 
 void
@@ -2636,6 +2637,7 @@ wintomon(Window w)
 void
 workspace(const Arg *arg) {
 	setws(arg->i);
+	focus(NULL);
 }
 
 /* There's no way to check accesses to destroyed windows, thus those cases are
