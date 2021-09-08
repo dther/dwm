@@ -4,7 +4,7 @@ focusurgent(const Arg *arg) {
 	for(c=selmon->clients; c && !c->isurgent; c=c->next);
 	if(c) {
 		if(!ISVISIBLE(c)) {
-			const Arg a = {.ui = c->tags};
+			const Arg a = {.ui = (c->tags | c->mon->tagset[c->mon->seltags])};
 			setws(c->ws);
 			view(&a);
 		}
