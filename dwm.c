@@ -127,6 +127,7 @@ struct Monitor {
 	Client *clients;
 	Client *sel;
 	Client *stack;
+	Client *lastjump;
 	Monitor *next;
 	Window barwin;
 	const Layout *lt[2];
@@ -167,6 +168,8 @@ static void enternotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
+static void focusjump(Client *c);
+static void focuslast(const Arg *arg);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
@@ -814,6 +817,22 @@ focusin(XEvent *e)
 
 	if (selmon->sel && ev->window != selmon->sel->win)
 		setfocus(selmon->sel);
+}
+
+void
+focusjump(Client *c)
+{
+	Client *oldsel = selmon->sel;
+	focus(c);
+	if (selmon->sel && c && c != oldsel)
+		selmon->lastjump = oldsel;
+}
+
+void
+focuslast(const Arg *arg)
+{
+	if (selmon->lastjump) 
+		focusjump(selmon->lastjump);
 }
 
 void
@@ -1781,6 +1800,8 @@ unmanage(Client *c, int destroyed)
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
+	if (m->lastjump == c)
+		m->lastjump = NULL;
 	free(c);
 	focus(NULL);
 	updateclientlist();
