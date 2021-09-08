@@ -153,6 +153,7 @@ struct Monitor {
 	Client *clients;
 	Client *sel;
 	Client *stack;
+	Client *lastjump;
 	Monitor *next;
 	Window barwin;
 	Window extrabarwin;
@@ -211,6 +212,8 @@ static void enternotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
+static void focusjump(Client *c);
+static void focuslast(const Arg *arg);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
@@ -1050,6 +1053,26 @@ focusin(XEvent *e)
 }
 
 void
+focusjump(Client *c)
+{
+	Client *oldsel = selmon->sel;
+	if (c->ws != selmon->ws)
+		setws(c->ws);
+	focus(c);
+	if (oldsel && c && c != oldsel)
+		selmon->lastjump = oldsel;
+}
+
+void
+focuslast(const Arg *arg)
+{
+	if (selmon->lastjump) {
+		focusjump(selmon->lastjump);
+		arrange(selmon);
+	}
+}
+
+void
 focusmon(const Arg *arg)
 {
 	Monitor *m;
@@ -1068,7 +1091,7 @@ focusstack(const Arg *arg)
 {
 	Client *c = NULL, *i;
 
-	if (!selmon->sel)
+	if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
 		return;
 	if (arg->i > 0) {
 		for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
@@ -1971,7 +1994,6 @@ setws(int nws)
 		selmon->lt[1] = workspaces[selmon->ws].lt[1];
 	}
 	arrange(selmon);
-	focus(NULL);
 }
 
 void
@@ -2181,6 +2203,8 @@ unmanage(Client *c, int destroyed)
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
+	if (m->lastjump == c)
+		m->lastjump = NULL;
 	free(c);
 
 	if (!s) {

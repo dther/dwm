@@ -20,7 +20,7 @@ focusurgent(const Arg *arg) {
 			if(!ISVISIBLE(c)) view(&a);
 		}
 		if(ISVISIBLE(c))
-				focus(c);
+				focusjump(c);
 		restack(selmon);
 	}
 }
