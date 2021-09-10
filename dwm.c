@@ -216,6 +216,7 @@ static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusjump(Client *c);
 static void focuslast(const Arg *arg);
+static void focusmaster(const Arg *arg);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
@@ -1079,10 +1080,10 @@ void
 focusjump(Client *c)
 {
 	Client *oldsel = selmon->sel;
-	if (c->ws != selmon->ws)
+	if (c && c->ws != selmon->ws)
 		setws(c->ws);
 	focus(c);
-	if (oldsel && c && c != oldsel)
+	if (oldsel && selmon->sel && selmon->sel != oldsel)
 		selmon->lastjump = oldsel;
 }
 
@@ -1091,6 +1092,24 @@ focuslast(const Arg *arg)
 {
 	if (selmon->lastjump) {
 		focusjump(selmon->lastjump);
+		arrange(selmon);
+	}
+}
+
+void
+focusmaster(const Arg *arg)
+{
+	Client *master;
+
+	if (selmon->nmaster < 1)
+		return;
+	if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
+		return;
+
+	if (!(master = nexttiled(selmon->clients))) {
+		return;
+	} else {
+		focusjump(master);
 		arrange(selmon);
 	}
 }
