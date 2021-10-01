@@ -2309,9 +2309,9 @@ updatebarpos(Monitor *m)
 	m->wy = m->showbar ? m->wy + bh : m->wy;
 	if (m->showbar) {
 		m->by = m->topbar ? m->wy - bh : m->wy + m->wh;
-        if (m->showextrabar) {
-		    m->eby = m->topbar ? m->wy + m->wh : m->wy - bh;
-        } else m->eby = -bh;
+		if (m->showextrabar) {
+			m->eby = m->topbar ? m->wy + m->wh : m->wy - bh;
+		} else m->eby = -bh;
 	} else {
 		m->by = -bh;
 		m->eby = -bh;
