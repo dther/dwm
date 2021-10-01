@@ -190,6 +190,8 @@ static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interac
 static void arrange(Monitor *m);
 static void arrangemon(Monitor *m);
 static void attach(Client *c);
+static void attachBelow(Client *c);
+static void toggleAttachBelow();
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
@@ -214,6 +216,7 @@ static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusjump(Client *c);
 static void focuslast(const Arg *arg);
+static void focusmaster(const Arg *arg);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
@@ -500,6 +503,26 @@ attach(Client *c)
 {
 	c->next = c->mon->clients;
 	c->mon->clients = c;
+}
+void
+attachBelow(Client *c)
+{
+	//If there is nothing on the monitor or the selected client is floating, attach as normal
+	if(c->mon->sel == NULL || c->mon->sel == c || c->mon->sel->isfloating) {
+		attach(c);
+		return;
+	}
+
+	//Set the new client's next property to the same as the currently selected clients next
+	c->next = c->mon->sel->next;
+	//Set the currently selected clients next property to the new client
+	c->mon->sel->next = c;
+
+}
+
+void toggleAttachBelow()
+{
+	attachbelow = !attachbelow;
 }
 
 void
@@ -849,7 +872,7 @@ deck(Monitor *m) {
 	if(n > m->nmaster) {
 		mw = m->nmaster ? m->ww * m->mfact : 0;
 		ns = m->nmaster > 0 ? 2 : 1;
-		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n - m->nmaster);
+		snprintf(m->ltsymbol, sizeof m->ltsymbol, ">%d", n - m->nmaster);
 	} else {
 		mw = m->ww;
 		ns = 1;
@@ -1057,10 +1080,10 @@ void
 focusjump(Client *c)
 {
 	Client *oldsel = selmon->sel;
-	if (c->ws != selmon->ws)
+	if (c && c->ws != selmon->ws)
 		setws(c->ws);
 	focus(c);
-	if (oldsel && c && c != oldsel)
+	if (oldsel && selmon->sel && selmon->sel != oldsel)
 		selmon->lastjump = oldsel;
 }
 
@@ -1069,6 +1092,24 @@ focuslast(const Arg *arg)
 {
 	if (selmon->lastjump) {
 		focusjump(selmon->lastjump);
+		arrange(selmon);
+	}
+}
+
+void
+focusmaster(const Arg *arg)
+{
+	Client *master;
+
+	if (selmon->nmaster < 1)
+		return;
+	if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
+		return;
+
+	if (!(master = nexttiled(selmon->clients))) {
+		return;
+	} else {
+		focusjump(master);
 		arrange(selmon);
 	}
 }
@@ -1364,7 +1405,10 @@ manage(Window w, XWindowAttributes *wa)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
 	if (c->isfloating)
 		XRaiseWindow(dpy, c->win);
-	attach(c);
+	if( attachbelow )
+		attachBelow(c);
+	else
+		attach(c);
 	attachstack(c);
 	XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32, PropModeAppend,
 		(unsigned char *) &(c->win), 1);
@@ -1742,7 +1786,10 @@ sendmon(Client *c, Monitor *m)
 	c->mon = m;
 	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
 	c->ws = m->ws; /* assign to monitor current workspace */
-	attach(c);
+	if( attachbelow )
+		attachBelow(c);
+	else
+		attach(c);
 	attachstack(c);
 	focus(NULL);
 	arrange(NULL);
@@ -2335,7 +2382,10 @@ updategeom(void)
 					m->clients = c->next;
 					detachstack(c);
 					c->mon = mons;
-					attach(c);
+					if( attachbelow )
+						attachBelow(c);
+					else
+						attach(c);
 					attachstack(c);
 				}
 				if (m == selmon)

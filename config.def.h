@@ -84,13 +84,14 @@ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static int attachbelow = 1;   /* Attach after the selected client in the stack */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "",      tile },    /* first entry is default */
 	{ "",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
-	{ "[D]",      deck },
+	{ ">D",      deck },
 };
 
 static char *wsnames[] = { "home", "code", "draw", "chat", "misc"};
@@ -165,7 +166,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_q,      cycleworkspace, {.i = -1} },
 	{ MODKEY,                       XK_w,      spawn,          {.v = switchcmd} },
 	{ MODKEY,                       XK_e,      cycleworkspace, {.i = +1} },
-	{ MODKEY,                       XK_semicolon, focuslast,   {0} },
+	{ MODKEY,                    XK_semicolon, focuslast,      {0} },
+	{ MODKEY|ControlMask,        XK_semicolon, focusmaster,    {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
