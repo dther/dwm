@@ -148,7 +148,7 @@ struct Monitor {
 	unsigned int sellt;
 	unsigned int tagset[2];
 	int showbar;
-    int showextrabar;
+	int showextrabar;
 	int topbar;
 	Client *clients;
 	Client *sel;
@@ -169,7 +169,7 @@ struct Workspace {
 	unsigned int sellt;
 	unsigned int tagset[2];
 	const Layout *lt[2];
-    unsigned int alttag;
+	unsigned int alttag;
 };
 
 typedef struct {
@@ -315,7 +315,7 @@ static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
 static void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
-    [ButtonRelease] = keyrelease,
+	[ButtonRelease] = keyrelease,
 	[ClientMessage] = clientmessage,
 	[ConfigureRequest] = configurerequest,
 	[ConfigureNotify] = configurenotify,
@@ -323,7 +323,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[EnterNotify] = enternotify,
 	[Expose] = expose,
 	[FocusIn] = focusin,
-    [KeyRelease] = keyrelease,
+	[KeyRelease] = keyrelease,
 	[KeyPress] = keypress,
 	[MappingNotify] = mappingnotify,
 	[MapRequest] = maprequest,
@@ -353,17 +353,17 @@ struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 void
 showalttag(const Arg *arg)
 {
-    selmon->alttag = 1;
-    drawbar(selmon);
+	selmon->alttag = 1;
+	drawbar(selmon);
 }
 
 void
 keyrelease(XEvent *e)
 {
-    if (e->xkey.keycode == XKeysymToKeycode(dpy, HOLDKEY)){
-        selmon->alttag = 0;
-        drawbar(selmon);
-    }
+	if (e->xkey.keycode == XKeysymToKeycode(dpy, HOLDKEY)){
+		selmon->alttag = 0;
+		drawbar(selmon);
+	}
 }
 
 void
@@ -931,10 +931,10 @@ drawbar(Monitor *m)
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		w = TEXTW(tags[i]);
-        wdelta = selmon->alttag ? abs(TEXTW(tags[i]) - TEXTW(tagsalt[i])) / 2 : 0;
+		wdelta = selmon->alttag ? abs(TEXTW(tags[i]) - TEXTW(tagsalt[i])) / 2 : 0;
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, wdelta + lrpad / 2, 
-                (selmon->alttag ? tagsalt[i] : tags[i]), urg & 1 << i);
+				(selmon->alttag ? tagsalt[i] : tags[i]), urg & 1 << i);
 		if (occ & 1 << i)
 			drw_rect(drw, x + boxs, boxs, boxw, boxw,
 				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
@@ -963,7 +963,7 @@ drawbar(Monitor *m)
 	drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
 
 	for (i = 0, x = m->ww; i < LENGTH(wsnames); i++) 
-	    x -= TEXTW(wsnames[i]);
+		x -= TEXTW(wsnames[i]);
 
 	for (i = 0; i < LENGTH(wsnames); i++) {
 		w = TEXTW(wsnames[i]);
@@ -1281,42 +1281,36 @@ killclient(const Arg *arg)
 void
 loadxrdb()
 {
-  Display *display;
-  char * resm;
-  XrmDatabase xrdb;
-  char *type;
-  XrmValue value;
+	Display *display;
+	char * resm;
+	XrmDatabase xrdb;
+	char *type;
+	XrmValue value;
 
-  display = XOpenDisplay(NULL);
+	display = XOpenDisplay(NULL);
+	resm = display ? XResourceManagerString(display) : NULL;
+	xrdb = resm ? XrmGetStringDatabase(resm) : NULL;
 
-  if (display != NULL) {
-    resm = XResourceManagerString(display);
+	if (xrdb != NULL) {
+		XRDB_LOAD_COLOR("dwm.color0", color0);
+		XRDB_LOAD_COLOR("dwm.color1", color1);
+		XRDB_LOAD_COLOR("dwm.color2", color2);
+		XRDB_LOAD_COLOR("dwm.color3", color3);
+		XRDB_LOAD_COLOR("dwm.color4", color4);
+		XRDB_LOAD_COLOR("dwm.color5", color5);
+		XRDB_LOAD_COLOR("dwm.color6", color6);
+		XRDB_LOAD_COLOR("dwm.color7", color7);
+		XRDB_LOAD_COLOR("dwm.color8", color8);
+		XRDB_LOAD_COLOR("dwm.color9", color9);
+		XRDB_LOAD_COLOR("dwm.color10", color10);
+		XRDB_LOAD_COLOR("dwm.color11", color11);
+		XRDB_LOAD_COLOR("dwm.color12", color12);
+		XRDB_LOAD_COLOR("dwm.color13", color13);
+		XRDB_LOAD_COLOR("dwm.color14", color14);
+		XRDB_LOAD_COLOR("dwm.color15", color15);
+	}
 
-    if (resm != NULL) {
-      xrdb = XrmGetStringDatabase(resm);
-
-      if (xrdb != NULL) {
-        XRDB_LOAD_COLOR("dwm.color0", color0);
-        XRDB_LOAD_COLOR("dwm.color1", color1);
-        XRDB_LOAD_COLOR("dwm.color2", color2);
-        XRDB_LOAD_COLOR("dwm.color3", color3);
-        XRDB_LOAD_COLOR("dwm.color4", color4);
-        XRDB_LOAD_COLOR("dwm.color5", color5);
-        XRDB_LOAD_COLOR("dwm.color6", color6);
-        XRDB_LOAD_COLOR("dwm.color7", color7);
-        XRDB_LOAD_COLOR("dwm.color8", color8);
-        XRDB_LOAD_COLOR("dwm.color9", color9);
-        XRDB_LOAD_COLOR("dwm.color10", color10);
-        XRDB_LOAD_COLOR("dwm.color11", color11);
-        XRDB_LOAD_COLOR("dwm.color12", color12);
-        XRDB_LOAD_COLOR("dwm.color13", color13);
-        XRDB_LOAD_COLOR("dwm.color14", color14);
-        XRDB_LOAD_COLOR("dwm.color15", color15);
-      }
-    }
-  }
-
-  XCloseDisplay(display);
+	XCloseDisplay(display);
 }
 
 void
@@ -2679,12 +2673,12 @@ xerrorstart(Display *dpy, XErrorEvent *ee)
 void
 xrdb(const Arg *arg)
 {
-  loadxrdb();
-  int i;
-  for (i = 0; i < LENGTH(colors); i++)
-                scheme[i] = drw_scm_create(drw, colors[i], 3);
-  focus(NULL);
-  arrange(NULL);
+	loadxrdb();
+	int i;
+	for (i = 0; i < LENGTH(colors); i++)
+		scheme[i] = drw_scm_create(drw, colors[i], 3);
+	focus(NULL);
+	arrange(NULL);
 }
 
 void
@@ -2737,8 +2731,8 @@ main(int argc, char *argv[])
 	if (!(xcon = XGetXCBConnection(dpy)))
 		die("dwm: cannot get xcb connection\n");
 	checkotherwm();
-        XrmInitialize();
-        loadxrdb();
+	XrmInitialize();
+	loadxrdb();
 	setup();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
