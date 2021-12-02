@@ -52,7 +52,7 @@
 #define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
 	                           * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
-#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]) && (C->ws == C->mon->ws))
+#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
@@ -83,7 +83,7 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
 	   NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-	   ClkClientWin, ClkRootWin, ClkLast, ClkWorkspaceBar }; /* clicks */
+	   ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
 typedef union {
 	int i;
@@ -102,7 +102,6 @@ typedef struct {
 
 typedef struct Monitor Monitor;
 typedef struct Client Client;
-typedef struct Workspace Workspace;
 
 struct Client {
 	char name[256];
@@ -118,7 +117,6 @@ struct Client {
 	Client *snext;
 	Client *swallowing;
 	Monitor *mon;
-	int ws;
 	Window win;
 };
 
@@ -158,17 +156,6 @@ struct Monitor {
 	Window barwin;
 	Window extrabarwin;
 	const Layout *lt[2];
-	int ws; /* Selected workspace */
-	unsigned int alttag;
-};
-
-struct Workspace {
-	float mfact;
-	int nmaster;
-	unsigned int seltags;
-	unsigned int sellt;
-	unsigned int tagset[2];
-	const Layout *lt[2];
 	unsigned int alttag;
 };
 
@@ -181,7 +168,6 @@ typedef struct {
 	int isterminal;
 	int noswallow;
 	int monitor;
-	int workspace;
 } Rule;
 
 /* function declarations */
@@ -250,7 +236,6 @@ static void runAutostart(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
-static void sendws(Client *c, int ws);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
@@ -378,7 +363,6 @@ applyrules(Client *c)
 	c->noswallow = -1;
 	c->isfloating = 0;
 	c->tags = 0;
-	c->ws = c->mon->ws;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
 	instance = ch.res_name  ? ch.res_name  : broken;
@@ -396,7 +380,6 @@ applyrules(Client *c)
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
 				c->mon = m;
-			c->ws = (r->workspace >= 0) ? r->workspace : c->mon->ws;
 		}
 	}
 	if (ch.res_class)
@@ -623,18 +606,12 @@ buttonpress(XEvent *e)
 	} else if (ev->window == selmon->extrabarwin) {
 		i = 0;
 		x = selmon->ww;
-		while (ev->x < x && ++i <= LENGTH(wsnames))
-			x -= TEXTW(wsnames[LENGTH(wsnames) - i]);
-		if (i <= LENGTH(wsnames)) {
-			click = ClkWorkspaceBar;
-			arg.i = LENGTH(wsnames) - i;
-		} else
-			click = ClkStatusText;
+		click = ClkStatusText;
 	}
 	for (i = 0; i < LENGTH(buttons); i++)
 		if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
-		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
-			buttons[i].func((click == ClkTagBar || click == ClkWorkspaceBar) && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
+				&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
+			buttons[i].func((click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg));
 }
 
 void
@@ -915,7 +892,7 @@ drawbar(Monitor *m)
 	int x, w, wdelta, tw = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
-	unsigned int i, occ = 0, urg = 0, wsocc = 0, wsurg = 0;
+	unsigned int i, occ = 0, urg = 0;
 	Client *c;
 
 	/* draw status first so it can be overdrawn by tags later */
@@ -926,13 +903,9 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
-		wsocc |= 1 << c->ws;
-		if (c->ws == m->ws)
-			/* only draw occupied tag markers for clients in this workspace */
-			occ |= c->tags;
+		occ |= c->tags;
 		if (c->isurgent) {
-			urg |= (c->ws == m->ws) ? c->tags : 0;
-			wsurg |= 1 << c->ws;
+			urg |= c->tags;
 		}
 	}
 	x = 0;
@@ -968,22 +941,6 @@ drawbar(Monitor *m)
 	/* Extra bar */
 	drw_setscheme(drw, scheme[SchemeNorm]);
 	drw_text(drw, 0, 0, mons->ww, bh, 0, estext, 0);
-
-	for (i = 0, x = m->ww; i < LENGTH(wsnames); i++) 
-		x -= TEXTW(wsnames[i]);
-
-	for (i = 0; i < LENGTH(wsnames); i++) {
-		w = TEXTW(wsnames[i]);
-		drw_setscheme(drw, scheme[m->ws == i ? SchemeSel : SchemeNorm]);
-		drw_text(drw, x,
-				0, w, bh, lrpad / 2, wsnames[i], wsurg & 1 << i);
-
-		if (wsocc & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->ws == i,
-				wsurg & 1 << i);
-		x += w;
-	}
 	drw_map(drw, m->extrabarwin, 0, 0, m->ww, bh);
 }
 
@@ -1357,7 +1314,6 @@ manage(Window w, XWindowAttributes *wa)
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
-		c->ws = t->mon->ws;
 	} else {
 		c->mon = selmon;
 		applyrules(c);
@@ -1520,14 +1476,6 @@ movemouse(const Arg *arg)
 		selmon = m;
 		focus(NULL);
 	}
-}
-
-void
-mvtoworkspace(const Arg *arg)
-{
-	if (arg->i == selmon->ws)
-		return;
-	sendws(selmon->sel, arg->i);
 }
 
 Client *
@@ -1767,23 +1715,11 @@ sendmon(Client *c, Monitor *m)
 	detachstack(c);
 	c->mon = m;
 	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
-	c->ws = m->ws; /* assign to monitor current workspace */
 	if( attachbelow )
 		attachBelow(c);
 	else
 		attach(c);
 	attachstack(c);
-	focus(NULL);
-	arrange(NULL);
-}
-
-void
-sendws(Client *c, int ws) {
-	if (!c || c->ws == ws)
-		return;
-	unfocus(c, 1);
-	applyrules(c); /* act as though window was just initialised */
-	c->ws = ws;
 	focus(NULL);
 	arrange(NULL);
 }

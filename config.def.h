@@ -49,34 +49,34 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class                instance    title           tags mask     isfloating   isterminal   noswallow   monitor  workspace */
-	{ "krita",              NULL,       NULL,           1 << 4,       0,           0,           0,          -1,      2 },
-	{ "MyPaint",            NULL,       NULL,           1 << 4,       0,           0,           0,          -1,      2 },
-	{ "tabbed",       "tabbed-surf",    NULL,           1 << 1,       0,           0,           0,          -1,      -1 },
-	{ "Brave-browser",      NULL,       NULL,           1 << 1,       0,           0,           -1,         -1,      -1 },
-	{ "qutebrowser",        NULL,       NULL,           1 << 1,       0,           0,           0,          -1,      -1 },
-	{ "discord",            NULL,       NULL,           1 << 2,       0,           0,           0,          -1,      3 },
-	{ "Zathura",            NULL,       NULL,           1 << 3,       0,           0,           0,          -1,      -1 },
-	{ "calibre",            NULL,       NULL,           1 << 3,       0,           0,           0,          -1,      4 },
-	{ NULL,        "libreoffice",       NULL,           1 << 3,       0,           0,           0,          -1,      -1 },
-	{ "cool-retro-term",    NULL,       NULL,           1 << 0,       0,           1,           -1,         -1,      -1 },
-	{ "st-256color",    "st-256color",  "st",           1 << 0,       0,           1,           -1,         -1,      -1 },
-	{ "st-256color",  "st-256color",    "ranger",       1 << 5,       0,           1,           0,          -1,      -1 },
-	{ "st-256color",  "st-256color",    "lf",           1 << 5,       0,           1,           0,          -1,      -1 },
-	{ "st-256color",  "st-256color",    "vim",          1 << 0,       0,           1,           0,          -1,      -1 },
-	{ "st-256color",  "st-256color",    "nvim",          1 << 0,       0,           1,           0,          -1,      -1 },
-	{ "st-256color",  "st-256color",    "tmux",         1 << 0,       0,           1,           0,          -1,      -1 },
-	{ "mpv",                NULL,       NULL,           1 << 3,       0,           0,           0,          -1,      -1 },
-	{ "Inkscape",           NULL,       NULL,           1 << 4,       0,           0,           0,          -1,      2 },
-	{ "OpenSCAD",           NULL,       NULL,           1 << 4,       0,           0,           0,          -1,      2 },
-	{ "cura",               NULL,       NULL,           1 << 4,       0,           0,           0,          -1,      2 },
-	{ "Steam",              NULL,       NULL,           1 << 6,       1,           0,           0,          -1,      4 },
-	{ "Steam",              "Steam",   "Steam",         1 << 6,       0,           0,           0,          -1,      4 },
-	{ "pico8",              "pico8",    NULL,           1 << 6,       0,           0,           0,          -1,      4 },
-	{ "Lutris",             NULL,       NULL,           1 << 6,       0,           0,           0,          -1,      4 },
-	{ "Cellwriter",         NULL,       NULL,           1 << 8,       1,           0,           0,          -1,      -1 },
-	{ "Wpg",                NULL,       NULL,           1 << 8,       1,           0,           0,          -1,      -1 },
-	{ NULL,                 NULL,       "Event Tester",      0,       1,           0,           1,          -1,      -1 },
-	{ NULL,                 "passcard", NULL,                1,       1,           0,           0,          -1,      -1 },
+	{ "krita",              NULL,       NULL,           1 << 4,       0,           0,           0,          -1 },
+	{ "MyPaint",            NULL,       NULL,           1 << 4,       0,           0,           0,          -1 },
+	{ "tabbed",       "tabbed-surf",    NULL,           1 << 1,       0,           0,           0,          -1 },
+	{ "Brave-browser",      NULL,       NULL,           1 << 1,       0,           0,           -1,         -1 },
+	{ "qutebrowser",        NULL,       NULL,           1 << 1,       0,           0,           0,          -1 },
+	{ "discord",            NULL,       NULL,           1 << 2,       0,           0,           0,          -1 },
+	{ "Zathura",            NULL,       NULL,           1 << 3,       0,           0,           0,          -1 },
+	{ "calibre",            NULL,       NULL,           1 << 3,       0,           0,           0,          -1 },
+	{ NULL,        "libreoffice",       NULL,           1 << 3,       0,           0,           0,          -1 },
+	{ "cool-retro-term",    NULL,       NULL,           1 << 0,       0,           1,           -1,         -1 },
+	{ "st-256color",    "st-256color",  "st",           1 << 0,       0,           1,           -1,         -1 },
+	{ "st-256color",  "st-256color",    "ranger",       1 << 5,       0,           1,           0,          -1 },
+	{ "st-256color",  "st-256color",    "lf",           1 << 5,       0,           1,           0,          -1 },
+	{ "st-256color",  "st-256color",    "vim",          1 << 0,       0,           1,           0,          -1 },
+	{ "st-256color",  "st-256color",    "nvim",         1 << 0,       0,           1,           0,          -1 },
+	{ "st-256color",  "st-256color",    "tmux",         1 << 0,       0,           1,           0,          -1 },
+	{ "mpv",                NULL,       NULL,           1 << 3,       0,           0,           0,          -1 },
+	{ "Inkscape",           NULL,       NULL,           1 << 4,       0,           0,           0,          -1 },
+	{ "OpenSCAD",           NULL,       NULL,           1 << 4,       0,           0,           0,          -1 },
+	{ "cura",               NULL,       NULL,           1 << 4,       0,           0,           0,          -1 },
+	{ "Steam",              NULL,       NULL,           1 << 6,       1,           0,           0,          -1 },
+	{ "Steam",              "Steam",   "Steam",         1 << 6,       0,           0,           0,          -1 },
+	{ "pico8",              "pico8",    NULL,           1 << 6,       0,           0,           0,          -1 },
+	{ "Lutris",             NULL,       NULL,           1 << 6,       0,           0,           0,          -1 },
+	{ "Cellwriter",         NULL,       NULL,           1 << 8,       1,           0,           0,          -1 },
+	{ "Wpg",                NULL,       NULL,           1 << 8,       1,           0,           0,          -1 },
+	{ NULL,                 NULL,       "Event Tester",      0,       1,           0,           1,          -1 },
+	{ NULL,                 "passcard", NULL,                1,       1,           0,           0,          -1 },
 };
 
 /* layout(s) */
@@ -93,9 +93,6 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 	{ ">D",      deck },
 };
-
-static char *wsnames[] = { "home", "code", "draw", "chat", "misc"};
-static Workspace workspaces[5];
 
 /* key definitions */
 #define MODKEY Mod4Mask
