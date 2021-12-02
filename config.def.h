@@ -163,9 +163,7 @@ static Key keys[] = {
     { MODKEY,                       XK_Left,   spawn,          {.v = mpcprevcmd} },
     { MODKEY,                       XK_Right,  spawn,          {.v = mpcnextcmd} },
     { MODKEY,                       XK_u,      focusurgent,    {0} },
-	{ MODKEY,                       XK_q,      cycleworkspace, {.i = -1} },
 	{ MODKEY,                       XK_w,      spawn,          {.v = switchcmd} },
-	{ MODKEY,                       XK_e,      cycleworkspace, {.i = +1} },
 	{ MODKEY,                    XK_semicolon, focuslast,      {0} },
 	{ MODKEY|ControlMask,        XK_semicolon, focusmaster,    {0} },
 	TAGKEYS(                        XK_1,                      0)
@@ -196,6 +194,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button1,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
-	{ ClkWorkspaceBar,      0,              Button1,        workspace,      {0} },
-	{ ClkWorkspaceBar,      MODKEY,         Button1,        mvtoworkspace,  {0} },
 };
