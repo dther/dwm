@@ -5,8 +5,6 @@ My personal fork of suckless'
 
 ## Features
 
- * Advanced workspace management, inspired by
- [awm](https://github.com/Alpt/awm)
  * Siji tag icons
  * tmux scratchpad (Super+\`)
  * Extra bar
