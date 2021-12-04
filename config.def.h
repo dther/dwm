@@ -10,30 +10,31 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const char statussep         = ';';      /* status bar separator */
 static const char *fonts[]          = { "Siji:size=10", "Terminus:size=10" };
 static const char dmenufont[]       = "Terminus:size=10";
-static char color0[]                = "#222222";
-static char color1[]                = "#222222";
-static char color2[]                = "#222222";
-static char color3[]                = "#222222";
-static char color4[]                = "#222222";
-static char color5[]                = "#222222";
-static char color6[]                = "#222222";
-static char color7[]                = "#bbbbbb";
-static char color8[]                = "#444444";
-static char color9[]                = "#222222";
-static char color10[]               = "#005577";
-static char color11[]               = "#222222";
-static char color12[]               = "#222222";
-static char color13[]               = "#222222";
-static char color14[]               = "#222222";
-static char color15[]               = "#eeeeee";
+
+/* default colours */
+static char normfgcolor[]           = "#bbbbbb";
+static char normbgcolor[]           = "#222222";
+static char normbordercolor[]       = "#444444";
+static char selfgcolor[]            = "#eeeeee";
+static char selbgcolor[]            = "#005577";
+static char selbordercolor[]        = "#005577";
 /* Some colours that don't change. Used for errors/warnings and the like. */
 //static char colorred[]              = "#ff0000";
 //static char coloryellow[]           = "#ffff00";
 //static char colorgreen[]            = "#00ff00";
+
+/* xrdb resources to be loaded. */
+const char normborderxres[] = "dwm.color8";
+const char normbgxres[]     = "dwm.color0";
+const char normfgxres[]     = "dwm.color7";
+const char selbgxres[]      = "dwm.color7";
+const char selfgxres[]      = "dwm.color10";
+const char selborderxres[]  = "dwm.color15";
+
 static char *colors[][3] = {
        /*               fg           bg           border   */
-       [SchemeNorm] = { color7, color0, color8 },
-       [SchemeSel]  = { color15,  color9,  color10 },
+       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
        //[SchemeOk]   = { colorgreen, color0, color10 },
        //[SchemeWarn] = { coloryellow, color0, color10 },
        //[SchemeUrgent] = { colorred, color0, color10 },
@@ -108,7 +109,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
 //static const char *networkmancmd[] = { "networkmanager_dmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
 static const char *connmancmd[] = { "connman-gtk", NULL};
@@ -118,7 +119,7 @@ static const char *mpctogglecmd[] = { "mpc", "toggle", NULL };
 static const char *mpcstopcmd[] = { "mpc", "stop", NULL };
 static const char *mpcnextcmd[] = { "mpc", "next", NULL };
 static const char *mpcprevcmd[] = { "mpc", "prev", NULL };
-static const char *switchcmd[] = { "switch", "-m", dmenumon, "-fn", dmenufont, "-nb", color0, "-nf", color7, "-sb", color10, "-sf", color15, NULL };
+static const char *switchcmd[] = { "switch", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 
 #include "focusurgent.c"
 static Key keys[] = {

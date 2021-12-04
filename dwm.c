@@ -1272,22 +1272,12 @@ loadxrdb()
 	xrdb = resm ? XrmGetStringDatabase(resm) : NULL;
 
 	if (xrdb != NULL) {
-		XRDB_LOAD_COLOR("dwm.color0", color0);
-		XRDB_LOAD_COLOR("dwm.color1", color1);
-		XRDB_LOAD_COLOR("dwm.color2", color2);
-		XRDB_LOAD_COLOR("dwm.color3", color3);
-		XRDB_LOAD_COLOR("dwm.color4", color4);
-		XRDB_LOAD_COLOR("dwm.color5", color5);
-		XRDB_LOAD_COLOR("dwm.color6", color6);
-		XRDB_LOAD_COLOR("dwm.color7", color7);
-		XRDB_LOAD_COLOR("dwm.color8", color8);
-		XRDB_LOAD_COLOR("dwm.color9", color9);
-		XRDB_LOAD_COLOR("dwm.color10", color10);
-		XRDB_LOAD_COLOR("dwm.color11", color11);
-		XRDB_LOAD_COLOR("dwm.color12", color12);
-		XRDB_LOAD_COLOR("dwm.color13", color13);
-		XRDB_LOAD_COLOR("dwm.color14", color14);
-		XRDB_LOAD_COLOR("dwm.color15", color15);
+		XRDB_LOAD_COLOR(normfgxres, normfgcolor);
+		XRDB_LOAD_COLOR(normbgxres, normbgcolor);
+		XRDB_LOAD_COLOR(normborderxres, normbordercolor);
+		XRDB_LOAD_COLOR(selfgxres, selfgcolor);
+		XRDB_LOAD_COLOR(selbgxres, selbgcolor);
+		XRDB_LOAD_COLOR(selborderxres, selbordercolor);
 	}
 
 	XCloseDisplay(display);
