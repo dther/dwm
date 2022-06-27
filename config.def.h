@@ -52,9 +52,9 @@ static const Rule rules[] = {
 	/* class                instance    title           tags mask     isfloating   isterminal   noswallow   monitor */
 	{ "krita",              NULL,       NULL,           1 << 4,       0,           0,           0,          -1 },
 	{ "MyPaint",            NULL,       NULL,           1 << 4,       0,           0,           0,          -1 },
-	{ "tabbed",       "tabbed-surf",    NULL,           1 << 1,       0,           0,           0,          -1 },
-	{ "Brave-browser",      NULL,       NULL,           1 << 1,       0,           0,           -1,         -1 },
-	{ "qutebrowser",        NULL,       NULL,           1 << 1,       0,           0,           0,          -1 },
+	{ "tabbed",       "tabbed-surf",    NULL,                0,       0,           0,           0,          -1 },
+	{ "Brave-browser",      NULL,       NULL,                0,       0,           0,           -1,         -1 },
+	{ "qutebrowser",        NULL,       NULL,                0,       0,           0,           0,          -1 },
 	{ "discord",            NULL,       NULL,           1 << 2,       0,           0,           0,          -1 },
 	{ "cool-retro-term",    NULL,       NULL,                0,       0,           1,           -1,         -1 },
 	{ "st-256color",        NULL,       NULL,                0,       0,           1,           -1,         -1 },
