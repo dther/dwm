@@ -17,7 +17,7 @@ static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char selfgcolor[]            = "#eeeeee";
 static char selbgcolor[]            = "#005577";
-static char selbordercolor[]        = "#005577";
+static char selbordercolor[]        = "#eeeeee";
 /* Some colours that don't change. Used for errors/warnings and the like. */
 //static char colorred[]              = "#ff0000";
 //static char coloryellow[]           = "#ffff00";
