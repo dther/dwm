@@ -1,3 +1,0 @@
-#!/bin/bash
-
-tmux -2 a -t "pad" || tmux -2 new-session -s "pad"
