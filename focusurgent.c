@@ -15,7 +15,7 @@ focusurgent(const Arg *arg) {
 	if (c) {
 		selmon = c->mon;
 		if(!ISVISIBLE(c)) {
-			const Arg a = {.ui = (c->tags | selmon->tagset[selmon->seltags])};
+			const Arg a = {.ui = c->tags};
 			if(!ISVISIBLE(c)) view(&a);
 		}
 		if(ISVISIBLE(c))
