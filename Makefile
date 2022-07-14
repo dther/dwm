@@ -40,14 +40,17 @@ install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	cp -f dwm ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
-	cp scripts/switch ${DESTDIR}${PREFIX}/bin/
 	chmod 755 ${DESTDIR}${PREFIX}/bin/switch
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
 
+scripts:
+	cp scripts/switch ${DESTDIR}${PREFIX}/bin/
+	cp scripts/dmenu-termdown ${DESTDIR}${PREFIX}/bin/
+
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
 		${DESTDIR}${MANPREFIX}/man1/dwm.1
 
-.PHONY: all options clean dist install uninstall
+.PHONY: all options clean dist install uninstall scripts
