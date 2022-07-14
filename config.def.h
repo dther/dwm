@@ -111,6 +111,7 @@ static const char *mpcstopcmd[] = { "mpc", "stop", NULL };
 static const char *mpcnextcmd[] = { "mpc", "next", NULL };
 static const char *mpcprevcmd[] = { "mpc", "prev", NULL };
 static const char *switchcmd[] = { "switch", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static const char *termdowncmd[] = { "dmenu-termdown", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 
 #include "focusurgent.c"
 static Key keys[] = {
@@ -144,6 +145,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_Print, spawn,     SHCMD("grabmeme.sh")},
+	{ MODKEY|ShiftMask,             XK_t,     spawn,     {.v = termdowncmd} },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
