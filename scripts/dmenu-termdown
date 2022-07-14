@@ -1,0 +1,59 @@
+#!/bin/sh
+# (c) 2022 Rudy Dellomas III
+
+# A dmenu-controlled timer and stopwatch which can be monitored via tmux.
+# Requires termdown, tmux and, of course, dmenu.
+
+TERMCMD=${TERMCMD:-"xterm -e"}
+SIGCMD="pkill -SIGRTMIN+9 dwmblocks"
+# FIXME: legacy name, change to something more appropriate
+TIMERFILE="${XDG_RUNTIME_DIR:-"/tmp"}/termato"
+TMUXSESSION="dmenu-termdown"
+
+if tmux has-session -t 'dmenu-termdown'; then
+	# timer already running, show timer controls
+	action=$(printf \
+"Pause/Resume
+Reset
+Plus (+10s)
+Minus (-10s)
+Quit
+Open in terminal" | dmenu -l 5 -i -p 'Timer in progress. Actions:' $@)
+	case $action in
+		Pause*) notify-send -u low "dmenu-termdown" "Pause toggled."
+			tmux send-keys -t "$TMUXSESSION:0" "Space"
+			;;
+		Reset*) notify-send -u low "dmenu-termdown" "Timer reset."
+			tmux send-keys -t "$TMUXSESSION:0" "R"
+			;;
+		Plus*) notify-send -u low "dmenu-termdown" "Added 10 seconds."
+			tmux send-keys -t "$TMUXSESSION:0" "+"
+			;;
+		Minus*) notify-send -u low "dmenu-termdown" "Subtracted 10 seconds."
+			tmux send-keys -t "$TMUXSESSION:0" "-"
+			;;
+		Quit*) notify-send -u low "dmenu-termdown" "Timer stopped."
+			tmux send-keys -t "$TMUXSESSION:0" "q"
+			;;
+		Open*) notify-send -u low "dmenu-termdown" "Opening tmux session..."
+			$TERMCMD tmux attach-session -t "$TMUXSESSION"
+			;;
+	esac
+	exit
+fi
+
+time=$(printf \
+"20m
+5m
+10m
+15m
+25m
+30m
+35m
+40m
+45m
+50m
+55m
+1h" | dmenu -p 'Set timer for...' $@)
+
+[ -n "$time" ] && tmux new-session -d -s "$TMUXSESSION" "termdown -o '$TIMERFILE' --exec-cmd '$SIGCMD' '$time' && notify-send -u critical 'dmenu-termdown' 'Timer for $time complete.'; $SIGCMD" && notify-send -u low "dmenu-termdown" "Timer set for $time."
