@@ -49,6 +49,7 @@ scripts:
 	chmod 755 ${DESTDIR}${PREFIX}/bin/switch
 	cp scripts/dmenu-termdown ${DESTDIR}${PREFIX}/bin/
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dmenu-termdown
+	cp scripts/dmenu_termrun ${DESTDIR}${PREFIX}/bin/
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\

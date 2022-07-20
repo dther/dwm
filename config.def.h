@@ -113,6 +113,7 @@ static const char *mpcprevcmd[] = { "mpc", "prev", NULL };
 static const char *switchcmd[] = { "switch", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termdowncmd[] = { "dmenu-termdown", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *passcmd[] = { "passmenu", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static const char *dmenutermcmd[] = { "dmenu_termrun", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 
 #include "focusurgent.c"
 static Key keys[] = {
@@ -120,7 +121,8 @@ static Key keys[] = {
     { 0,                            HOLDKEY,   showalttag,       {0} },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
     { MODKEY,                       XK_n,      spawn,          {.v = connmancmd} },
-    { MODKEY|ShiftMask,                       XK_p,      spawn,          {.v = passcmd} },
+    { MODKEY|ShiftMask,                       XK_p,      spawn,          {.v = dmenutermcmd} },
+    { MODKEY|ControlMask,                     XK_p,      spawn,          {.v = passcmd} },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY|ShiftMask,             XK_b,      toggleextrabar, {0} },

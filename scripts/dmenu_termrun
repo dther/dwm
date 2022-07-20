@@ -1,0 +1,9 @@
+#!/bin/sh
+xargs_r() {
+	# Simulates a GNU extension.
+	input="$(cat)"
+	[ -z "$input" ] && exit
+	xargs $@ $input
+}
+
+dmenu_path | dmenu -p "$TERMCMD" "$@" | xargs_r $TERMCMD &
