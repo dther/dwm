@@ -6,7 +6,7 @@ include config.mk
 SRC = drw.c dwm.c util.c
 OBJ = ${SRC:.c=.o}
 
-all: options dwm
+all: options dwm scripts
 
 options:
 	@echo dwm build options:
@@ -45,14 +45,19 @@ install: all
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
 
 scripts:
-	cp scripts/switch ${DESTDIR}${PREFIX}/bin/
-	chmod 755 ${DESTDIR}${PREFIX}/bin/switch
+	cp scripts/dmenu-switch ${DESTDIR}${PREFIX}/bin/
+	chmod 755 ${DESTDIR}${PREFIX}/bin/dmenu-switch
 	cp scripts/dmenu-termdown ${DESTDIR}${PREFIX}/bin/
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dmenu-termdown
 	cp scripts/dmenu_termrun ${DESTDIR}${PREFIX}/bin/
+	chmod 755 ${DESTDIR}${PREFIX}/bin/dmenu_termrun
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
 		${DESTDIR}${MANPREFIX}/man1/dwm.1
+	rm -f ${DESTDIR}${PREFIX}/bin/dmenu-switch
+	rm -f ${DESTDIR}${PREFIX}/bin/dmenu-termdown
+	rm -f ${DESTDIR}${PREFIX}/bin/dmenu_termrun
+
 
 .PHONY: all options clean dist install uninstall scripts
