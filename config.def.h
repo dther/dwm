@@ -1,7 +1,16 @@
 /* See LICENSE file for copyright and license details. */
 
+/* mini functions */
+void
+restart(const Arg *unused)
+{
+	/* assumes that dwm is in PATH and had no args. */
+	char *const argv[] = {"dwm", NULL};
+	execvp(argv[0], argv);
+}
+
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -93,6 +102,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask|ControlMask, XK_q,      restart,        {0} },
 };
 
 /* button definitions */
@@ -111,4 +121,3 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
