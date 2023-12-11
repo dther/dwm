@@ -717,6 +717,14 @@ drawbar(Monitor *m)
 	for (i = 0; i < LENGTH(tags); i++) {
 		w = TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+		if (!(occ & 1 << i) && (occ < (0x1F)) && (i > 4)) {
+			/* TODO: make this configurable */
+			/* hide tags after 5, unless they or all tags below are occupied */
+			const char* moretags = "+"; /* pseudo-tag that expands when added to */
+			drw_text(drw, x, 0, w, bh, lrpad / 2, moretags, urg & 1 << i);
+			x += w;
+			break;
+		}
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
 		if (occ & 1 << i)
 			drw_rect(drw, x + boxs, boxs, boxw, boxw,
