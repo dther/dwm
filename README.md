@@ -3,22 +3,15 @@
 My personal fork of suckless'
 [dwm, dynamic window manager](https://dwm.suckless.org).
 
+Based off of the major version currently named in `config.mk`.
+
+## Philosophy
+
+ - minimise changes to upstream `.c` files in order to make merging easy.
+ - added functionality is in separate files or config.def.h for modularity.
+ - keep it simple, stupid.
+
 ## Features
 
- * Siji tag icons
- * tmux scratchpad (Super+\`)
- * Extra bar
- * Window swallowing
- * Xrdb integration
-
-## Planned features
-
- * Fuzzy window finding
-    - Using a fuzzy dmenu prompt, select windows and automatically
-      switch to them.
-    - Needs Extended Window Management Hints, like
-   [focusonnetactive](https://dwm.suckless.org/patches/focusonnetactive/) or
-   [ewmhtags](https://dwm.suckless.org/patches/ewmhtags/).
- * dmenu workspaces selector
-    - something like [dwmfifo](https://dwm.suckless.org/patches/dwmfifo)
-      and a shell script is probably best for this.
+ - Personal aesthetic changes.
+ - Restart dwm without killing X.
