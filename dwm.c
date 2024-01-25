@@ -56,6 +56,7 @@
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
+#define HIDEMASK(X)             ((1 << ((X) + 1)) - 1)
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -267,6 +268,7 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static int tagshidden = 1;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -416,7 +418,7 @@ attachstack(Client *c)
 void
 buttonpress(XEvent *e)
 {
-	unsigned int i, x, click;
+	unsigned int i, x, click, visibletags;
 	Arg arg = {0};
 	Client *c;
 	Monitor *m;
@@ -431,10 +433,12 @@ buttonpress(XEvent *e)
 	}
 	if (ev->window == selmon->barwin) {
 		i = x = 0;
+		visibletags = tagshidden ? showtags + 2 : LENGTH(tags);
+
 		do
 			x += TEXTW(tags[i]);
-		while (ev->x >= x && ++i < LENGTH(tags));
-		if (i < LENGTH(tags)) {
+		while (ev->x >= x && ++i < visibletags);
+		if (i < visibletags) {
 			click = ClkTagBar;
 			arg.ui = 1 << i;
 		} else if (ev->x < x + TEXTW(selmon->ltsymbol))
@@ -714,15 +718,17 @@ drawbar(Monitor *m)
 			urg |= c->tags;
 	}
 	x = 0;
+	tagshidden = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		w = TEXTW(tags[i]);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
-		if (!(occ & 1 << i) && (occ < (0x1F)) && (i > 4)) {
+		if (!(occ & 1 << i) && (occ < (HIDEMASK(showtags))) && (i > 4)) {
 			/* TODO: make this configurable */
 			/* hide tags after 5, unless they or all tags below are occupied */
 			const char* moretags = "+"; /* pseudo-tag that expands when added to */
 			drw_text(drw, x, 0, w, bh, lrpad / 2, moretags, urg & 1 << i);
 			x += w;
+			tagshidden = 1;
 			break;
 		}
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
